@@ -22,6 +22,12 @@
 </template>
 
 <script>
+//survey
+//download
+//grid
+//batch_import
+//help
+
 
 // https://jsbin.com/wejomuf/edit?html,css,output
 // https://github.com/jgthms/bulma/issues/2560
