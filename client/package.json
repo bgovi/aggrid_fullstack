@@ -7,8 +7,13 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "ag-grid-community": "^29.3.5",
+    "ag-grid-enterprise": "^29.3.5",
+    "ag-grid-vue3": "^29.3.5",
+    "bulma": "^0.9.4",
     "core-js": "^3.6.5",
-    "vue": "^3.0.0"
+    "vue": "^3.0.0",
+    "vue-router": "^4.2.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^5.0.8",

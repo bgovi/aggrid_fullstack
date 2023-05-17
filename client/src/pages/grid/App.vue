@@ -1,17 +1,14 @@
 <template>
-<div>
+<div  >
   <nav-bar />
 
-  <div class="is-widescreen">
-    <div class="columns">
+  <div class="is-widescreen" >
+    <div class="columns" style="max-height: calc(100vh - 2.8rem)" >
       <side-menu />
 
-      <div class="column content">
-          <h1 class="title">Section</h1>
-          <h2 class="subtitle">
-            A simple container to divide your page into <strong>sections</strong>, like the one you're currently reading.
-          </h2>
-      </div>
+      <div class="column content" style="height: calc(100vh - 2.72rem)">
+        <grid />
+      </div >
     </div>
 
   </div>
@@ -27,12 +24,14 @@
 <script>
 
 // https://jsbin.com/wejomuf/edit?html,css,output
+// https://github.com/jgthms/bulma/issues/2560
 
-import 'bulma/css/bulma.css'
+
+// import 'bulma/css/bulma.css'
 
 import NavBar   from './components/NavBar.vue'
 import SideMenu from './components/SideMenu.vue'
-
+import Grid from     './components/Grid.vue'
 
 
 
@@ -44,7 +43,8 @@ export default {
   },
   components: {
     NavBar,
-    SideMenu
+    SideMenu,
+    Grid
   },
 
 
@@ -56,22 +56,29 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss">
+// body {
+//   overflow-y: hidden; /* Hide vertical scrollbar */
+//   overflow-x: hidden; /* Hide horizontal scrollbar */
+// }
+// @import 'bulma/css/bulma.css';
+
+@import "./assets/bulma.scss";
+
 .menu {
   position: sticky;
   display: inline-block;
   vertical-align: top;
   max-height: 100vh;
   overflow-y: auto;
-  width: 200px;
+  width: 230px;
   top: 0;
   bottom: 0;
-  padding: 30px;
+  padding: 20px;
 }
 
 .content {
   display: inline-block;
 }
-
 
 </style>
