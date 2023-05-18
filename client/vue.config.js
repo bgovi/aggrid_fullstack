@@ -26,19 +26,19 @@ module.exports = {
             chunks: ['chunk-vendors', 'chunk-common', 'build']
         },
         batch_file: {
-            entry: './src/pages/build/main.js',
+            entry: './src/pages/batch_file/main.js',
             template: 'public/index.html',
             title: 'build page',
             chunks: ['chunk-vendors', 'chunk-common', 'batch_file']
         },
         survey: {
-            entry: './src/pages/build/main.js',
+            entry: './src/pages/survey/main.js',
             template: 'public/index.html',
             title: 'build page',
             chunks: ['chunk-vendors', 'chunk-common', 'survey']
         },
         download: {
-            entry: './src/pages/build/main.js',
+            entry: './src/pages/download/main.js',
             template: 'public/index.html',
             title: 'build page',
             chunks: ['chunk-vendors', 'chunk-common', 'download']
