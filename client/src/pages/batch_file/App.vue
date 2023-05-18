@@ -3,8 +3,13 @@
 </template>
 
 <script>
-
 import HelloWorld from '../../components/HelloWorld.vue'
+//show errors
+
+//upload to grid button
+//select sheet if xlsx
+//smart mapping from header file
+
 
 export default {
   name: 'App',
