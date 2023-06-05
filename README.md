@@ -8,8 +8,12 @@ client
 user vue router in web history mode
 
 
-server
+server:
     nodejs
     redis
     python sqlglot
         no transactions. if needed write function
+
+sql_server_proxy:
+
+test_data:
