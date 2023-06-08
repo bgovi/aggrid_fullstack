@@ -17,3 +17,6 @@ server:
 sql_server_proxy:
 
 test_data:
+
+
+redis_api

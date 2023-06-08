@@ -1,4 +1,8 @@
 /*
-json config files for each module can be attached to an app.
+allows versioning
+namespace
+title
+description
+json_config
 
 */
