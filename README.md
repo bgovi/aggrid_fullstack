@@ -16,7 +16,7 @@ server:
 
 sql_server_proxy:
 
-test_data:
+init_data:
 
 
-redis_api
+dev_env
