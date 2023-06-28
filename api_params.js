@@ -1,6 +1,35 @@
-
-
 /*
+wrap_in jwt_token
+route_gaurd
+user_id
+ui_id: app_module_id, app_permission?
+route_name: /namespace/name/action
+check route_name in linked view config file?
+
+
+api_token:
+user_id:
+pwd: tmp //incase need to close
+is_active
+rate_limit
+
+refresh redis button
+update redis cache with user
+
+
+let config = {
+    'ui': 'aggrid', //aggrid download import survey
+    'namespace': 'xyz',
+    'name': 'xyz',
+    'id': '1', //for update/delete ?
+    'test': false, //for testing
+    'config': {
+
+    }
+}
+
+
+
 data params
 
 api_route:
@@ -29,6 +58,16 @@ create builder route. still requires direct connections.
 
 
 /*
+
+
+
+
+
+
+
+
+
+
 module_api_perms
 
 //route
@@ -42,17 +81,52 @@ module_api_perms
 
 
 
-//for save route
-let query_params = [
+//for save route ui only
+let post_params = [
     // Array of objects. Contains information for crud operations.
     // Operation order is not preserved.
     {
         "crud_type": "", //only needed for save route s or select
         "data": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}]
+        "include": [], //return list of fields
+        "exclude": []
+        //"type_cast": boolean
     }
 ]
 
+//for select route
+let select_params = {
+
+    order_by: '',
+    where: '',
+    limit: '',
+    offset: '',  
+    // --maybe quick search just in where string?
+    // search_filter: "", //string or object with quick filter type:
+    // functions?
+    /*
+        data:  [],
+        types: {}
+    */
+    "type_cast": 'boolean', //just dont wrap into text
+    "include": [], //return list of fields
+    "exclude": []
+}
+
+
+
 //for other routes:
+
+//check by second?
+
+//global post counter 100,000
+
+
+//global download counter 1,000,000
+
+
+//len 100 * 50 = 5000
+
 /*
 {
     "data": [
@@ -91,6 +165,14 @@ let query_params = [
 
 //undefined_value
 
+//max payload and size.
+
+
+//type is for filters
+//all returned data is as text.
+//send types?
+
+//client side alias
 
 x = {
     model:{
@@ -98,9 +180,12 @@ x = {
         'name': None,
         'description': '',
         'crud_type': 'siudt', //allow overwrite in columns. assembles select, insert, update, delete
+        'batch_size': 50, //default?  _ag_values_ [] column stored in order. underscore added to keep track of each row.
+        //one at a time if not explicitly defined
         //type also required for filtering on input
         'columns': [
             // #primary key
+            //field column alias
             {'column': 'id',             'type': 'bigint', 'description': '',  'allow_null': False, 'default_value': '', 'display_name': ''  },
             {'column': 'first_name',     'type': 'text', 'description': '',    'allow_null': False, 'default_value': '', 'display_name': ''  },
             {'column': 'middle_name',    'type': 'text', 'description': '',    'allow_null': False, 'default_value': '', 'display_name': ''  },
@@ -113,6 +198,8 @@ x = {
             {'column': 'is_tmp_password','type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '', 'display_name': ''  },
             {'column': 'created_at',     'type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '', 'display_name': ''  },
             {'column': 'updated_at',     'type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '', 'display_name': ''  }
+            //json
+
             //ifnull. type not enforced
             //ag_param: token values
             //optional can be injected
@@ -157,6 +244,11 @@ x = {
 
         ],
         //query: {tmpl: aa, columns: [], }
+        //--ag_values--
+        //--ag_columns--
+        //must containt --ag_values-- for batch
+        // https://stackoverflow.com/questions/1564956/how-can-i-select-from-list-of-values-in-sql-server
+        // simple inject for values test. nulls?
         //'from': 1//bool
         //where
         //deleted at
@@ -168,17 +260,27 @@ x = {
     }
 }
 
+//query
+
+//insert into ( ) FROM values
+
 
 //overwrites
 let routes = {
 
     select: {
         //func or model replacement
-        //instead
+        //instead: insert//upsert
+        //upsert: {}
         //query //template and interface
         
     }, //function or model overwrite
-    insert: {},
+
+
+    insert: {
+        //upsert: {}
+
+    },
     //upsert: {} 
     update: {},
     delete: {},
@@ -243,7 +345,3 @@ if no default value ignore
 
 //returning null, *, []
 //query
-
-//values
-//select, insert/upsert, delete, update 
-
