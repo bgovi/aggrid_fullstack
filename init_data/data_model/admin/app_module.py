@@ -5,6 +5,9 @@ app_id
 module_id
 module_name
     how its displayed in the app
+
+something for public
+
 """
 
 

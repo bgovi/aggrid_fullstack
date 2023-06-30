@@ -1,3 +1,24 @@
+# Overview
+
+
+
+# Tools and Technology
+aggrid
+bulma
+mathjs
+sequelize
+
+
+# Initialization
+
+
+
+
+
+# Login
+oauth only for now () powered by passportjs
+
+
 # aggrid_fullstack
 Fullstack interface for aggrid. Allows quick deployment of grid based apps.
 
@@ -20,3 +41,30 @@ init_data:
 
 
 dev_env
+
+
+```javascript
+
+
+
+
+
+```
+
+
+```json
+{
+    "x": "abd":
+}
+
+```
+
+
+
+
+```sql
+BEGIN;
+SELECT ;
+COMMIT;
+
+```
