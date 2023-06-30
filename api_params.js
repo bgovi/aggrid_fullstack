@@ -87,12 +87,15 @@ let post_params = [
     // Operation order is not preserved.
     {
         "crud_type": "", //only needed for save route s or select
-        "data": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}]
+        "data": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}] or object
         "include": [], //return list of fields
-        "exclude": []
+        "exclude": [],
+        "row_id": null //name_of field
         //"type_cast": boolean
     }
 ]
+
+//row_id
 
 //for select route
 let select_params = {
@@ -142,21 +145,6 @@ let select_params = {
 //sql_token
 
 
-// "default_fields": "", //object with default type {x:"default_value_x", y:"default_value_y"}
-// "set_fields": "",  //array that has columns that should be used for set
-// "on_conflict": "", //string a-zA-Z0-9
-// "on_constraint": "", //string a-zA-Z0-9
-// "upsert": "",
-// "where": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}]
-// "offset": "", //should be integer greater or equal to 0
-// "limit": "", //should be positive integer
-// "search_filter": "", //string or object with quick filter type:
-// "search_rank": "", //bool
-// "returning": "", //array of fields to used for returning [id, column_1, xxx] //defaults to id?
-// "order_by": ""  // [{'col1': 'asc}, {'col_2': 'desc'}]
-// #env
-// special_names _ag_meta_, _ag_first_name_ ...
-
 //generic
 //read only as default
 //crud_type: 'siud'
@@ -174,6 +162,9 @@ let select_params = {
 
 //client side alias
 
+
+//append null
+
 x = {
     model:{
         'schema': None,
@@ -186,26 +177,99 @@ x = {
         'columns': [
             // #primary key
             //field column alias
-            {'column': 'id',             'type': 'bigint', 'description': '',  'allow_null': False, 'default_value': '', 'display_name': ''  },
-            {'column': 'first_name',     'type': 'text', 'description': '',    'allow_null': False, 'default_value': '', 'display_name': ''  },
-            {'column': 'middle_name',    'type': 'text', 'description': '',    'allow_null': False, 'default_value': '', 'display_name': ''  },
-            {'column': 'last_name',      'type': 'text', 'description': '',    'allow_null': False, 'default_value': '', 'display_name': ''  },
-            {'column': 'email',          'type': 'text', 'description': '',    'allow_null': False, 'default_value': '', 'display_name': ''  },
-            {'column': 'oauth_id',       'type': 'text',   'description': '',  'allow_null': False, 'default_value': '', 'display_name': ''  },
-            {'column': 'api_rate',       'type': 'bigint', 'description': '',  'allow_null': False, 'default_value': '', 'display_name': ''  },
-            {'column': 'is_admin',       'type': 'boolean','description': '',  'allow_null': False, 'default_value': '', 'display_name': ''  },
-            {'column': 'password',       'type': 'text', 'description': '',    'allow_null': False, 'default_value': '', 'display_name': ''  },
-            {'column': 'is_tmp_password','type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '', 'display_name': ''  },
-            {'column': 'created_at',     'type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '', 'display_name': ''  },
-            {'column': 'updated_at',     'type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '', 'display_name': ''  }
-            //json
+            { 'field': 'id', 'column': 'id', 'alias': '',            'type': 'bigint', 'description': '',  'allow_null': False, 'default_value': ''},
+            {'column': 'first_name',     'type': 'text', 'description': '',    'allow_null': False, 'default_value': '', 'alias': ''  },
+            {'column': 'middle_name',    'type': 'text', 'description': '',    'allow_null': False, 'default_value': '', 'alias': ''  },
+            {'column': 'last_name',      'type': 'text', 'description': '',    'allow_null': False, 'default_value': '', 'alias': ''  },
+            {'column': 'email',          'type': 'text', 'description': '',    'allow_null': False, 'default_value': '', 'alias': ''  },
+            {'column': 'oauth_id',       'type': 'text',   'description': '',  'allow_null': False, 'default_value': '', 'alias': ''  },
+            {'column': 'api_rate',       'type': 'bigint', 'description': '',  'allow_null': False, 'default_value': '', 'alias': ''  },
+            {'column': 'is_admin',       'type': 'boolean','description': '',  'allow_null': False, 'default_value': '', 'alias': ''  },
+            {'column': 'password',       'type': 'text', 'description': '',    'allow_null': False, 'default_value': '', 'alias': ''  },
+            {'column': 'is_tmp_password','type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '', 'alias': ''  },
+            {'column': 'created_at',     'type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '', 'alias': ''  },
+            {'column': 'updated_at',     'type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '', 'alias': ''  },
 
-            //ifnull. type not enforced
-            //ag_param: token values
-            //optional can be injected
-            //true must be entered
-            //display_name i.e. alias if different then named_parameter
-        ],
+
+            // "default_fields": "", //object with default type {x:"default_value_x", y:"default_value_y"}
+            // "set_fields": "",  //array that has columns that should be used for set
+            // "on_conflict": "", //string a-zA-Z0-9
+            // "on_constraint": "", //string a-zA-Z0-9
+            // "upsert": "",
+            // "where": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}]
+            // "offset": "", //should be integer greater or equal to 0
+            // "limit": "", //should be positive integer
+            // "search_filter": "", //string or object with quick filter type:
+            // "returning": "", //array of fields to used for returning [id, column_1, xxx] //defaults to id?
+            // "order_by": ""  // [{'col1': 'asc}, {'col_2': 'desc'}]
+            // #env
+            // special_names _ag_meta_, _ag_first_name_ ...
+
+
+            // virtual_columns and or calculated columns
+            // vfield refrences column always alphaNumeric. no sql injection possible.
+
+
+            //vcolumn etc.
+            //field maps to column
+
+            //xyz
+            {'vfield':'x', 'column': '',  'alias': '', 'type': 'boolean',
+                //funciton inputs?
+            
+                //args required
+
+                'description': '', 'allow_null': False, 'default_value': '', 'alias': '',
+                'return': false,
+                'function': {
+                    'schema': '',
+                    'name': '',
+                    'args': [
+                        { 'field':  'name', 'required': true, 'default_value': ''},
+                        { 'column': 'name'},
+                        { 'raw': 'name'}
+                    ]
+                },
+                'operation': {
+
+                }
+            }
+            //empty vfields
+
+            //input type_cast
+        ]   
+            //vfield for searching tsvector, tsquery
+
+
+                //return?
+        ,
+
+        'raw': "", //requires bind types to be specified
+
+            // query: {
+            //     'description': '',
+            //     'args': []
+            // }
+
+
+            // 'virtual_columns': [
+
+            // ],
+
+
+
+
+
+        //filter column
+        //json
+
+        //ifnull. type not enforced
+        //ag_param: token values
+        //optional can be injected
+        //true must be entered
+        //alias i.e. alias if different then named_parameter
+
+
         'max_rows': false,
         //flag for server modification only
         'primary_key': '', //defaults to id or [ ] for composite
