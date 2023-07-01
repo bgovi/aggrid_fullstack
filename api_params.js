@@ -1,4 +1,7 @@
 /*
+admin test route
+
+
 wrap_in jwt_token
 route_gaurd
 user_id
@@ -92,8 +95,18 @@ let post_params = [
         "exclude": [],
         "row_id": null //name_of field
         //"type_cast": boolean
+
+        //returns
+
+        //data
+        //error_messages
+        //error_type
+        //data
+        //error messages
     }
 ]
+
+
 
 //row_id
 
@@ -214,7 +227,36 @@ x = {
             //field maps to column
 
             //xyz
-            {'vfield':'x', 'column': '',  'alias': '', 'type': 'boolean',
+            {'vfield':'cfte', 'column': '',  'alias': '', 'type': 'boolean',
+                //funciton inputs?
+            
+                //args required
+
+                'description': '', 'allow_null': False, 'default_value': '', 'alias': '',
+                'return': false,
+                'function': {
+                    'schema': '',
+                    'name': '',
+                    'args': [
+                        { 'field':  'name', 'required': true, 'default_value': ''},
+                        { 'column': 'name'},
+                        { 'raw': 'name'}
+                    ]
+                }
+            },
+            //empty vfields
+            //xyz
+
+            //input  is string or json object
+            //output is numeric type or boolean 
+            {'sfield':'search_string', 'column': '',  'alias': '', 'type': 'boolean',
+
+                //input_type
+                //keys: defaults?
+                //output_type
+
+                //enforce json
+
                 //funciton inputs?
             
                 //args required
@@ -230,11 +272,10 @@ x = {
                         { 'raw': 'name'}
                     ]
                 },
-                'operation': {
-
-                }
+                //return: false
             }
-            //empty vfields
+
+
 
             //input type_cast
         ]   
