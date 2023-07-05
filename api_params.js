@@ -1,4 +1,8 @@
 /*
+
+array of objects or just objects
+
+
 admin test route
 
 
@@ -57,14 +61,8 @@ display?
 create builder route. still requires direct connections.
 
 /save
-*/
 
-
-/*
-
-
-
-
+route can add parameters for download type on select
 
 
 
@@ -80,8 +78,30 @@ module_api_perms
 // #values
 
 
+
+
+//ui config
+
+
+server crash and restart.
+
+get route displays config
+
+
 */
 
+let config = {
+    'namespace': 'xyz',
+    'name': 'xyz',
+    'id': '1', //for update/delete ?
+    'component': '', // survey, grid, download, upload
+    'test': false, //use a testing table object for read and write.
+    'config': {
+
+    }
+}
+
+//test_prod is sync
 
 
 //for save route ui only
@@ -93,22 +113,37 @@ let post_params = [
         "data": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}] or object
         "include": [], //return list of fields
         "exclude": [],
-        "row_id": null //name_of field
+        "transaction_id": null //name_of field underscore append for multi data
         //"type_cast": boolean
+    }
+]
 
-        //returns
-
-        //data
-        //error_messages
-        //error_type
-        //data
-        //error messages
+//for other route
+let post_params_2 = {
+    "data": [],
+    "transaction_id": []
+}
+//or 
+let post_params_3 = [
+    {
+        "data": [],
+        "transaction_id": ""
     }
 ]
 
 
+let post_return = [
+    {
+        //returns
+        //data
+        //error_messages: concatenated
+        //error_type
+        //data
+        //error messages
+    }
 
-//row_id
+]
+
 
 //for select route
 let select_params = {
@@ -130,28 +165,6 @@ let select_params = {
 }
 
 
-
-//for other routes:
-
-//check by second?
-
-//global post counter 100,000
-
-
-//global download counter 1,000,000
-
-
-//len 100 * 50 = 5000
-
-/*
-{
-    "data": [
-
-    ]
-}
-
-
-*/
 
 
 //insert, upsert, select, delete, update
@@ -182,6 +195,9 @@ x = {
     model:{
         'schema': None,
         'name': None,
+        'test_schema': None,
+        'test_name': None,
+
         'description': '',
         'crud_type': 'siudt', //allow overwrite in columns. assembles select, insert, update, delete
         'batch_size': 50, //default?  _ag_values_ [] column stored in order. underscore added to keep track of each row.
@@ -391,6 +407,30 @@ let routes = {
     delete: {},
     // deleted_at: "update column"
     truncate: {} //true defaults to false
+}
+
+let test_routes = {
+    //for testing
+    select: {
+        //func or model replacement
+        //instead: insert//upsert
+        //upsert: {}
+        //query //template and interface
+        
+    }, //function or model overwrite
+
+
+    insert: {
+        //upsert: {}
+
+    },
+    //upsert: {} 
+    update: {},
+    delete: {},
+    // deleted_at: "update column"
+    truncate: {} //true defaults to false
+
+
 }
 
 // #set as primary key type

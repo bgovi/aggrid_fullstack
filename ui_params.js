@@ -5,38 +5,53 @@ aggrid modules
 pull and push config into json or nodejs
 */
 
-//ui config
+//component configuration
 let config = {
-    'ui': 'aggrid', //aggrid download import survey
     'namespace': 'xyz',
     'name': 'xyz',
     'id': '1', //for update/delete ?
-    'test': false, //for testing
+    'component': '', // survey, grid, download, upload, notes as markdown
+
+    //read only. crud operations displayed on screen
+    'test': false, //for testing uses test routes
     'config': {
 
     }
 }
 
+//add permissions link table to api
+//test default false
 
+
+//'ui': 'aggrid', //aggrid download import survey
 //columnDefs (required)
-//ui
-//ui_params
+//ui: string
+//ui_params: object
+    //type_check
+    //api
+    //colors
+    //error
 
+//api //select, insert, update, delete
 
-//api scan
+//default ui
 
-//if valueSetter, valueGetter, valueFormatter
-//cellStyle
-//copy/paste wont work
-
-
+//later
+//valueSetter, valueGetter, valueFormatter, cellStyle
+//cellRenderer, cellEditor
 
 
 /*
 survey modules
-
 bulma with pagination
 */
+//layout same as aggrid. but allows conditional display
+//pagination
+//allows data initialization.
+
+//save and next and close. for task or multiple surveys
+
+
 //autoocomplete
 
 
@@ -44,7 +59,14 @@ bulma with pagination
 download modules
 */
 
+//filter
+//pagination
+//order_by
+
 
 /*
 import modules
 */
+
+//mapping
+//column_matching
