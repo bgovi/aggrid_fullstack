@@ -20,21 +20,6 @@ pwd: tmp //incase need to close
 is_active
 rate_limit
 
-refresh redis button
-update redis cache with user
-
-
-let config = {
-    'ui': 'aggrid', //aggrid download import survey
-    'namespace': 'xyz',
-    'name': 'xyz',
-    'id': '1', //for update/delete ?
-    'test': false, //for testing
-    'config': {
-
-    }
-}
-
 
 
 data params
@@ -87,19 +72,57 @@ server crash and restart.
 
 get route displays config
 
+// "default_fields": "", //object with default type {x:"default_value_x", y:"default_value_y"}
+// "set_fields": "",  //array that has columns that should be used for set
+// "on_conflict": "", //string a-zA-Z0-9
+// "on_constraint": "", //string a-zA-Z0-9
+// "upsert": "",
+// "where": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}]
+// "offset": "", //should be integer greater or equal to 0
+// "limit": "", //should be positive integer
+// "search_filter": "", //string or object with quick filter type:
+// "returning": "", //array of fields to used for returning [id, column_1, xxx] //defaults to id?
+// "order_by": ""  // [{'col1': 'asc}, {'col_2': 'desc'}]
+// #env
+// special_names _ag_meta_, _ag_first_name_ ...
+// rls row level security, expression or model
+// column equality
+// filter object, subquery filter
 
+//field types
+
+field
+vfield
+sfield
+
+primary_key: str or array of strings
+
+
+agfield: 
+
+tfield
+timestamps: 
+    created_at
+    updated_at
+    deleted_at
+        // deleted_at: key. select where deleted_at is null
+
+
+truncate: default false
+
+
+bind_type: replacement or bind
+
+
+if replacement :variable_name
+if bind: $variable_name
+the names are automaticaly used correctly if using model object.
+if writing raw query must properly name variables. 
+
+doubling will ignore xyz
 */
 
-let config = {
-    'namespace': 'xyz',
-    'name': 'xyz',
-    'id': '1', //for update/delete ?
-    'component': '', // survey, grid, download, upload
-    'test': false, //use a testing table object for read and write.
-    'config': {
 
-    }
-}
 
 //test_prod is sync
 
@@ -111,8 +134,7 @@ let post_params = [
     {
         "crud_type": "", //only needed for save route s or select
         "data": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}] or object
-        "include": [], //return list of fields
-        "exclude": [],
+        "include": [],
         "transaction_id": null //name_of field underscore append for multi data
         //"type_cast": boolean
     }
@@ -120,12 +142,13 @@ let post_params = [
 
 //for other route
 let post_params_2 = {
-    "data": [],
-    "transaction_id": []
+    "data": [], // {}
+    "transaction_id": ""
 }
 //or 
 let post_params_3 = [
     {
+        "crud_type": "",
         "data": [],
         "transaction_id": ""
     }
@@ -134,62 +157,61 @@ let post_params_3 = [
 
 let post_return = [
     {
-        //returns
-        //data
-        //error_messages: concatenated
-        //error_type
-        //data
-        //error messages
-    }
 
+        //data: {}
+        //transaction_id: ""
+        //error_msg:
+    }
 ]
 
 
 //for select route
 let select_params = {
 
-    order_by: '',
-    where: '',
+    order_by: '', //[]
+    where: '', //[]
+    //operator ignored search_filter number or rank search_filter: "", //string or object with quick filter type
+
     limit: '',
-    offset: '',  
-    // --maybe quick search just in where string?
-    // search_filter: "", //string or object with quick filter type:
-    // functions?
+    offset: '',
+    //for mapping. provides a set of null values to search against
+    //union as first or last column in select and set as null?
+    prepend_null: '',
+    append_null: '',
     /*
         data:  [],
         types: {}
     */
-    "type_cast": 'boolean', //just dont wrap into text
-    "include": [], //return list of fields
-    "exclude": []
+    "type_cast": [], //true
+    //type_cast select values?
+
+    
+    //'boolean', //just dont wrap into text
+    "include": [] //return list of fields
 }
 
+// sql_token
 
+let select_return = {
+    "crud_type": "",
+    data: [],
+    error_msg: ""
+}
 
-
-//insert, upsert, select, delete, update
-//sql_token
-
-
-//generic
-//read only as default
-//crud_type: 'siud'
-
-//route
-
-//undefined_value
-
-//max payload and size.
 
 
 //type is for filters
 //all returned data is as text.
 //send types?
-
 //client side alias
 
 
 //append null
+//field is bydirectional for interface
+//column is the actual column used in postgres or mysql for name mapping.
+//alias will change them of return column select column as alias 
+//vfield is for computed values for select and filters and order by only. not available as a modification parameter.
+//sfield for text based search or rank. expects a string and 
 
 x = {
     model:{
@@ -198,11 +220,39 @@ x = {
         'test_schema': None,
         'test_name': None,
 
+        'bind_type': null,
         'description': '',
-        'crud_type': 'siudt', //allow overwrite in columns. assembles select, insert, update, delete
-        'batch_size': 50, //default?  _ag_values_ [] column stored in order. underscore added to keep track of each row.
+
+        'batch_size': null, //defaults to 1. does nothing yet for bulk_insert/ bulk_update/ bulk_delete
+        //for all or nothing?
+        //defaults to insert, update, delete
+        //may only return count of changes.
+
         //one at a time if not explicitly defined
         //type also required for filtering on input
+
+        //deleted_at: true
+
+        'upsert': {
+            // "on_conflict": "", //string a-zA-Z0-9 name: //set_fields if missing or empty do_nothing
+            // "on_constraint": "", //string a-zA-Z0-9 name: //set_fields or do_nothing 
+            // "do_nothing"
+        },
+
+        'rls': "", //equality or expression added as where statement
+
+        // insert into LeadCustomer (Firstname, Surname, BillingAddress, email)
+        // select 
+        //     'John', 'Smith', 
+        //     '6 Brewery close, Buxton, Norfolk', 'cmp.testing@example.com'
+        // where not exists (
+        //     select 1 from leadcustomer where firstname = 'John' and surname = 'Smith'
+        // );
+
+
+
+        //error_meaning for constraints
+
         'columns': [
             // #primary key
             //field column alias
@@ -219,29 +269,14 @@ x = {
             {'column': 'created_at',     'type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '', 'alias': ''  },
             {'column': 'updated_at',     'type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '', 'alias': ''  },
 
+            {'ag_field': '' , 
+                'ag_type': '',
+                //function()
 
-            // "default_fields": "", //object with default type {x:"default_value_x", y:"default_value_y"}
-            // "set_fields": "",  //array that has columns that should be used for set
-            // "on_conflict": "", //string a-zA-Z0-9
-            // "on_constraint": "", //string a-zA-Z0-9
-            // "upsert": "",
-            // "where": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}]
-            // "offset": "", //should be integer greater or equal to 0
-            // "limit": "", //should be positive integer
-            // "search_filter": "", //string or object with quick filter type:
-            // "returning": "", //array of fields to used for returning [id, column_1, xxx] //defaults to id?
-            // "order_by": ""  // [{'col1': 'asc}, {'col_2': 'desc'}]
-            // #env
-            // special_names _ag_meta_, _ag_first_name_ ...
-
+                'column': 'updated_at',     'type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '', 'alias': ''  },
 
             // virtual_columns and or calculated columns
             // vfield refrences column always alphaNumeric. no sql injection possible.
-
-
-            //vcolumn etc.
-            //field maps to column
-
             //xyz
             {'vfield':'cfte', 'column': '',  'alias': '', 'type': 'boolean',
                 //funciton inputs?
@@ -259,12 +294,16 @@ x = {
                         { 'raw': 'name'}
                     ]
                 }
-            },
-            //empty vfields
-            //xyz
+                // "expression": {
+                //     "bind_type": false
+                //      "xyz": false
+                // }
+                // "bind_type": "" return: false
 
-            //input  is string or json object
-            //output is numeric type or boolean 
+
+            },
+            //search string field. string comming from user, can add multiple columns as input
+            //first input alwasy user string.
             {'sfield':'search_string', 'column': '',  'alias': '', 'type': 'boolean',
 
                 //input_type
@@ -274,8 +313,15 @@ x = {
                 //enforce json
 
                 //funciton inputs?
-            
                 //args required
+
+                //input type_cast
+
+
+                // compare_columns?
+                //operator
+
+
 
                 'description': '', 'allow_null': False, 'default_value': '', 'alias': '',
                 'return': false,
@@ -288,46 +334,16 @@ x = {
                         { 'raw': 'name'}
                     ]
                 },
-                //return: false
+                "expression": ""
+
             }
-
-
-
-            //input type_cast
         ]   
-            //vfield for searching tsvector, tsquery
-
-
-                //return?
+        //vfield for searching tsvector, tsquery
         ,
 
-        'raw': "", //requires bind types to be specified
-
-            // query: {
-            //     'description': '',
-            //     'args': []
-            // }
-
-
-            // 'virtual_columns': [
-
-            // ],
-
-
-
-
-
-        //filter column
-        //json
-
-        //ifnull. type not enforced
-        //ag_param: token values
-        //optional can be injected
-        //true must be entered
-        //alias i.e. alias if different then named_parameter
-
-
         'max_rows': false,
+        //50000
+
         //flag for server modification only
         'primary_key': '', //defaults to id or [ ] for composite
         'exclude_pk_insert': true, //default true. doesnt allow insert to pass for model based query
@@ -335,7 +351,6 @@ x = {
         'ignore_undefined': true,// for dynamic assembly only. default_value to filter in raw query. default value is null by default?
         //trigger_value always set by server. as raw sting. user has no choice
         //deleted_at use trigger_value check options i.e 'sd' on crud_type for created_at use si
-        //type_cast select values?
         //must contain atleast one value to update for update or delete?
         //deleted_at is datetime column: column, value:
         'where': '', //string template for where statement allows quick rls for model
@@ -356,37 +371,27 @@ x = {
         //     on_constraint:
         // }
     },
-    //for specific route
-    func: {
-        'schema': '',
-        'name': '',
-        'description': '',
-        'args': [
 
-        ],
-        //query: {tmpl: aa, columns: [], }
-        //--ag_values--
-        //--ag_columns--
-        //must containt --ag_values-- for batch
-        // https://stackoverflow.com/questions/1564956/how-can-i-select-from-list-of-values-in-sql-server
-        // simple inject for values test. nulls?
-        //'from': 1//bool
-        //where
-        //deleted at
-        //query test select doesnt have trailing semicolon. wrap in select
-    },
-    query: {
-        'description': '',
-        'args': []
-    }
 }
 
+// query: {
+//     'description': '',
+//     'args': []
+// }
+
+
+
+//raw query needs required fields if using subset
+//just for knowledge?
+
+
 //query
+//null_query
 
-//insert into ( ) FROM values
+//undefined values ignored unless required is used and default_value is injected
+//if using raw query default values is accessible.
+//include fields determine what to use.
 
-
-//overwrites
 let routes = {
 
     select: {

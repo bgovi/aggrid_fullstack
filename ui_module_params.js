@@ -19,9 +19,20 @@ let config = {
     }
 }
 
+// let config = {
+//     'ui': 'aggrid', //aggrid download import survey
+//     'namespace': 'xyz',
+//     'name': 'xyz',
+//     'id': '1', //for update/delete ?
+//     'test': false, //for testing
+//     'config': {
+
+//     }
+// }
+
+
 //add permissions link table to api
 //test default false
-
 
 //'ui': 'aggrid', //aggrid download import survey
 //columnDefs (required)
@@ -40,11 +51,17 @@ let config = {
 //valueSetter, valueGetter, valueFormatter, cellStyle
 //cellRenderer, cellEditor
 
+//dynamic survey for grid
+//tasks
 
 /*
 survey modules
 bulma with pagination
 */
+
+//
+
+
 //layout same as aggrid. but allows conditional display
 //pagination
 //allows data initialization.

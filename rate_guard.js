@@ -26,3 +26,8 @@
 // pwd: tmp //incase need to close
 // is_active
 // rate_limit for select and modification?
+
+//max payload and size.
+
+// refresh redis button
+// update redis cache with user
