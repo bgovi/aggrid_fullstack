@@ -241,6 +241,12 @@ actions: select/insert/update/delete/truncate
 let routes = {
 
     select: {
+        model: {
+
+
+        }
+
+
         //crud_type for model use only
 
         //func or model replacement
@@ -252,59 +258,44 @@ let routes = {
 
 
     insert: {
+            //optional 
+            //do_instead: ''
+
         //upsert: {}
 
     },
     //upsert: {} 
     update: {},
-    delete: {},
+    delete: {
+            //optional 
+            //do_instead: ''
+
+
+    },
     // deleted_at: "update column"
     truncate: {} //true defaults to false
 }
+
+//test_model for separate set if test_schema or test_name not defined
+//use schema and name not test_schema and test_name
+//test_prod is sync check string equivalency with diff?
+//if no testing using routes will do nothing
+
 
 let test_routes = {
-    //for testing
+ 
     select: {
-        //func or model replacement
-        //instead: insert//upsert
-        //upsert: {}
-        //query //template and interface
-        
+        //model
+        //use schema and name not test_schema and test_name
+
     }, //function or model overwrite
-
-
-    insert: {
-        //upsert: {}
-
-    },
-    //upsert: {} 
+    insert: {}, 
     update: {},
     delete: {},
     // deleted_at: "update column"
     truncate: {} //true defaults to false
 
 }
-
-
-
-/*
-if replacement :variable_name
-if bind: $variable_name
-the names are automaticaly used correctly if using model object.
-if writing raw query must properly name variables. 
-doubling will ignore xyz
-*/
-
-
-
-//test_prod is sync
-
-
-//for save route ui only
-
-// where to return type information
-// "types": null,
-// meta?
 
 
 /*
@@ -411,8 +402,6 @@ let post_return = [
 
 
 // #set as primary key type
-
-
 /*
     //require fields
     //batch_insert/batch_upsert
