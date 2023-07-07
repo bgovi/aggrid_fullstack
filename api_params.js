@@ -23,25 +23,39 @@ a new jwt_token with the updated valid_key
 
 
 Get routes will display informations on the api for calling and testing.
+get_routes
+
+meta information
+documentation
+types
+interface
+dev
+
+
 
 Routes can be built with pseudo code using the model syntax or each route can be
 explicitly wrote with pure sql
 */
 
+//app should only have table read write permissions.
+//table creation and deletion controlloed by separate connection.
+//admin conneciton explicitly gives permissions to app
 
+//use defaults at the sql level if possible
 let model = {
-        'schema': None,
-        'name': None,
-        'test_schema': None,
-        'test_name': None,
 
-        'bind_type': null, //replacement or bind
+        'schema': "prod_schema",
+        'name': "table_name",
+        'test_schema': "test_schema",
+        'test_name': "table_name",
         'description': '',
 
+        'bind_type': null, //replacement or bind
 
         //deleted_at: true
         'upsert': {
             // "on_conflict": "", //string a-zA-Z0-9 name: //set_fields if missing or empty do_nothing
+            //  set
             // "on_constraint": "", //string a-zA-Z0-9 name: //set_fields or do_nothing 
             // "do_nothing"
         },
@@ -58,16 +72,17 @@ let model = {
             SELECT column1, column2, column3, ...
             FROM table1
             WHERE condition;
+
+            // insert into LeadCustomer (Firstname, Surname, BillingAddress, email)
+            // select 
+            //     'John', 'Smith', 
+            //     '6 Brewery close, Buxton, Norfolk', 'cmp.testing@example.com'
+            // where not exists (
+            //     select 1 from leadcustomer where firstname = 'John' and surname = 'Smith'
+            //  SELECT * FROM (VALUES (1, 'one'), (2, 'two'), (3, 'three')) AS t (num,letter);
         */
 
 
-        // insert into LeadCustomer (Firstname, Surname, BillingAddress, email)
-        // select 
-        //     'John', 'Smith', 
-        //     '6 Brewery close, Buxton, Norfolk', 'cmp.testing@example.com'
-        // where not exists (
-        //     select 1 from leadcustomer where firstname = 'John' and surname = 'Smith'
-        //  SELECT * FROM (VALUES (1, 'one'), (2, 'two'), (3, 'three')) AS t (num,letter);
 
 
         // );
@@ -78,90 +93,74 @@ let model = {
 
         'columns': [
             // #primary key
-            //field column alias
-            { 'field': 'id', 'column': 'id',             'type': 'bigint', 'description': '',  'allow_null': False, 'default_value': ''},
-            {'column': 'first_name',     'type': 'text', 'description': '',    'allow_null': False, 'default_value': '',   },
-            {'column': 'middle_name',    'type': 'text', 'description': '',    'allow_null': False, 'default_value': '',   },
-            {'column': 'last_name',      'type': 'text', 'description': '',    'allow_null': False, 'default_value': '',   },
-            {'column': 'email',          'type': 'text', 'description': '',    'allow_null': False, 'default_value': '',   },
-            {'column': 'oauth_id',       'type': 'text',   'description': '',  'allow_null': False, 'default_value': '',   },
-            {'column': 'api_rate',       'type': 'bigint', 'description': '',  'allow_null': False, 'default_value': '',   },
-            {'column': 'is_admin',       'type': 'boolean','description': '',  'allow_null': False, 'default_value': '',   },
-            {'column': 'password',       'type': 'text', 'description': '',    'allow_null': False, 'default_value': '',   },
-            {'column': 'is_tmp_password','type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '',   },
-            {'column': 'created_at',     'type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '',   },
-            {'column': 'updated_at',     'type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '',   },
+            //field column alias alias
+            { 'field': 'id',         'column': 'id',         'type': 'bigint',  'description': '',  'default_value': ''},
+            { 'field': 'first_name', 'column': 'First Name', 'type': 'text',    'description': '',  'default_value': '',   },
 
-            {'ag_field': '' , 
-                'ag_type': '',
-                //function()
+            //if missing default reject
+            { 'field': 'value',                              'type': 'numeric', 'required': true   },
+ 
+            //agfield
 
-                'column': 'updated_at',     'type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '', 'alias': ''  },
+            //modification rules. server inserts infor. does query have any say?
+            //has defaults
 
-            // virtual_columns and or calculated columns
+            //on_insert, on_update, on_delete, mutation information handled by server.
+            //user allowed to delete
+            {'agfield': 'updated_at' , 'agtype': 'updated_at', 'column': 'updated_at'},
+            {'agfield': 'created_at' , 'agtype': 'created_at', 'column': 'Creataed At'},
+            {'agfield': 'deleted_at' , 'agtype': 'deleted_at'}, //expression
+            //or expression
+
+
+            // virtual_columns and or calculated columns only select
             // vfield refrences column always alphaNumeric. no sql injection possible.
-            //xyz
             {'vfield':'cfte', 'column': '',  'alias': '', 'type': 'boolean',
-                //funciton inputs?
-            
-                //args required
-
-                'description': '', 'allow_null': False, 'default_value': '', 'alias': '',
-                'return': false,
-                'function': {
-                    'schema': '',
-                    'name': '',
-                    'args': [
-                        { 'field':  'name', 'required': true, 'default_value': ''},
-                        { 'column': 'name'},
-                        { 'raw': 'name'}
-                    ]
+                'description': '',
+                "expression": {
+                    "bind_type": false,
+                     "xyz": false
                 }
-                // "expression": {
-                //     "bind_type": false
-                //      "xyz": false
-                // }
-                // "bind_type": "" return: false
 
 
             },
             //search string field. string comming from user, can add multiple columns as input
             //first input alwasy user string.
             {'sfield':'search_string', 'column': '',  'alias': '', 'type': 'boolean',
+                // true/false or threshold
 
-                //input_type
-                //keys: defaults?
-                //output_type
+                //input type cast
+
+                //input keys with default for json
+
+                //search_columns: []  //casted so string and concatenated with space?
+                //or string for specific_column ?
+
+
+                //output_type filter type
 
                 //enforce json
 
-                //funciton inputs?
-                //args required
-
-                //input type_cast
-
-
                 // compare_columns?
-                //operator
-
-
+                // operator
 
                 'description': '', 'allow_null': False, 'default_value': '', 'alias': '',
                 'return': false,
+                //operator
+
                 'function': {
                     'schema': '',
                     'name': '',
                     'args': [
-                        { 'field':  'name', 'required': true, 'default_value': ''},
-                        { 'column': 'name'},
-                        { 'raw': 'name'}
+                        { 'field':  'name', 'required': true},
+                        { 'field':  'name', 'default_value': '' },
+                        { 'expression': 'sql text'}
                     ]
                 },
                 "expression": ""
 
             }
         ]   
-        //vfield for searching tsvector, tsquery
         ,
 
         'max_rows': false, //number
@@ -169,23 +168,80 @@ let model = {
 
         'primary_key': '', //defaults to id or [ ] for composite
         'exclude_pk_insert': true, //default true. doesnt allow insert to pass for model based query
-        'ignore_undefined': true,// for dynamic assembly only. default_value to filter in raw query. default value is null by default?
+        'ignore_undefined': true,// for dynamic assembly only. default_value to filter in raw query.
+        // default value is null by default?
+
+        //
+        'crud_type': null // for route use only. overwrites how route is dynamically generated.
+
+};
+
+/*
+function syntax args parameter is same as column structure in model
+'function': {
+    'schema': '',
+    'name': '',
+    'args': [
+        { 'field':  'name', 'required': true, 'default_value': ''},
+        { 'column': 'name'},
+        { 'expression': 'name'}
+    ]
+},
+*/
 
 
-        // instead: insert, update, delete, etc
-        // return: * or string or array of strings
-        //where predicate for views? conditionals
-        //column_order
-        //if contains query and or model overwrite
-        //text_cast: true by default
 
-        // insert/upsert: {
-        //     on_conflict:
-        //     on_constraint:
-        // }
-        'batch_size': null, //defaults to 1. does nothing yet for bulk_insert/ bulk_update/ bulk_delete
+
+
+//routes
+let routes = {
+
+    select: {
+        //crud_type for model use only
+
+        //func or model replacement
+        //instead: insert//upsert
+        //upsert: {}
+        //query //template and interface
+        
+    }, //function or model overwrite
+
+
+    insert: {
+        //upsert: {}
+
+    },
+    //upsert: {} 
+    update: {},
+    delete: {},
+    // deleted_at: "update column"
+    truncate: {} //true defaults to false
+}
+
+let test_routes = {
+    //for testing
+    select: {
+        //func or model replacement
+        //instead: insert//upsert
+        //upsert: {}
+        //query //template and interface
+        
+    }, //function or model overwrite
+
+
+    insert: {
+        //upsert: {}
+
+    },
+    //upsert: {} 
+    update: {},
+    delete: {},
+    // deleted_at: "update column"
+    truncate: {} //true defaults to false
 
 }
+
+
 
 
 
@@ -210,7 +266,11 @@ actions: select/insert/update/delete/truncate
 
 
 
-
+//include for subsets of model. for column level permissions
+//primary_key for update/delete key sway. usefully if unique field as identity
+//redefined model or add function for something different.
+//specify crud_type for overwrite.
+//hard code query for full dynamic expression.
 
 
 
@@ -327,6 +387,13 @@ doubling will ignore xyz
 
 
 //for save route ui only
+
+// where to return type information
+// "types": null,
+// meta?
+
+
+//save requires access to insert/update and deelte
 let post_params = [
     // Array of objects. Contains information for crud operations.
     // Operation order is not preserved.
@@ -334,12 +401,15 @@ let post_params = [
         "crud_type": "", //only needed for save route s or select
         "data": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}] or object
         "include": [],
-        "transaction_id": null //name_of field underscore append for multi data
+        "transaction_id": null, //name_of field underscore append for multi data
         //"type_cast": boolean
     }
 ]
 
 //for other route
+//type returned from get route
+//append type
+
 let post_params_2 = {
     "data": [], // {}
     "transaction_id": ""
@@ -377,10 +447,34 @@ let select_params = {
 
     order_by: '', //[]
     where: '', //[]
-    //operator ignored search_filter number or rank search_filter: "", //string or object with quick filter type
-
     limit: '',
     offset: '',
+
+    search: {}, //rank or text search
+    //operator ignored search_filter number or rank search_filter: "", //string or object with quick filter type
+    //rank added in select clause. used as where and order by. removed from final return query
+
+    /*
+        select *
+        from (
+            SELECT
+                pictures.id,
+                ts_rank_cd(to_tsvector('english', pictures.title), 
+                to_tsquery('small dog')) AS score
+            FROM pictures
+            --filters go here--
+        ) s
+        WHERE score > 0
+        ORDER BY score DESC
+
+        https://stackoverflow.com/questions/12933805/best-way-to-use-postgresql-full-text-search-ranking
+    */
+
+
+    //filters then search
+
+    //if rank. filter then order by?
+
     //for mapping. provides a set of null values to search against
     //union as first or last column in select and set as null?
     prepend_null: '',
@@ -389,10 +483,9 @@ let select_params = {
         data:  [],
         types: {}
     */
-    "type_cast": [], //true
-    //type_cast select values?
 
-    
+
+
     //'boolean', //just dont wrap into text
     "include": [] //return list of fields
 }
@@ -403,7 +496,8 @@ let select_return = {
     "crud_type": "",
     data: [],
     error_msg: "",
-    count: 0
+    count: 0,
+    // "types": null
 }
 
 //for all or nothing?
@@ -473,51 +567,6 @@ let select_return = {
 //if using raw query default values is accessible.
 //include fields determine what to use.
 
-let routes = {
-
-    select: {
-        //func or model replacement
-        //instead: insert//upsert
-        //upsert: {}
-        //query //template and interface
-        
-    }, //function or model overwrite
-
-
-    insert: {
-        //upsert: {}
-
-    },
-    //upsert: {} 
-    update: {},
-    delete: {},
-    // deleted_at: "update column"
-    truncate: {} //true defaults to false
-}
-
-let test_routes = {
-    //for testing
-    select: {
-        //func or model replacement
-        //instead: insert//upsert
-        //upsert: {}
-        //query //template and interface
-        
-    }, //function or model overwrite
-
-
-    insert: {
-        //upsert: {}
-
-    },
-    //upsert: {} 
-    update: {},
-    delete: {},
-    // deleted_at: "update column"
-    truncate: {} //true defaults to false
-
-
-}
 
 // #set as primary key type
 
