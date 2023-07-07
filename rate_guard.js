@@ -6,7 +6,7 @@
 
 
 //global download counter 1,000,000
-
+//server crash and restart.
 
 //len 100 * 50 = 5000
 

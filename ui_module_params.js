@@ -3,6 +3,8 @@ aggrid modules
 
 
 pull and push config into json or nodejs
+
+//add repull options for dropdowns?
 */
 
 //component configuration

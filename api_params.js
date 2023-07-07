@@ -35,6 +35,9 @@ dev
 
 Routes can be built with pseudo code using the model syntax or each route can be
 explicitly wrote with pure sql
+
+
+bullk would be a json array thats parrsed?
 */
 
 //app should only have table read write permissions.
@@ -51,6 +54,14 @@ let model = {
         'description': '',
 
         'bind_type': null, //replacement or bind
+        /*
+        if replacement :variable_name
+        if bind: $variable_name
+        the names are automaticaly used correctly if using model object.
+        if writing raw query must properly name variables. 
+        doubling will ignore xyz
+        */
+
 
         //deleted_at: true
         'upsert': {
@@ -83,14 +94,18 @@ let model = {
         */
 
 
-
-
-        // );
-
-
-
         //error_meaning for constraints
+        error_constraint: {
+            'sql_error_name': "message to append to is meaningful"
+        },
 
+
+        //append null
+        //field is bydirectional for interface
+        //column is the actual column used in postgres or mysql for name mapping.
+        //alias will change them of return column select column as alias 
+        //vfield is for computed values for select and filters and order by only. not available as a modification parameter.
+        //sfield for text based search or rank. expects a string and 
         'columns': [
             // #primary key
             //field column alias alias
@@ -170,9 +185,17 @@ let model = {
         'exclude_pk_insert': true, //default true. doesnt allow insert to pass for model based query
         'ignore_undefined': true,// for dynamic assembly only. default_value to filter in raw query.
         // default value is null by default?
-
+        // truncate: default false not implemented
         //
-        'crud_type': null // for route use only. overwrites how route is dynamically generated.
+
+        // include syntax
+        // primary_key for update/delete if other primary key is required
+        //'do_instead': null // for route use only. overwrites how route is dynamically generated.
+        // otherwise query will be generated based on route it is created in
+
+        //undefined values ignored unless required is used and default_value is injected
+        //if using raw query default values is accessible.
+        //include fields determine what to use.
 
 };
 
@@ -189,11 +212,32 @@ function syntax args parameter is same as column structure in model
 },
 */
 
-
+// query: {
+//     'description': '',
+//     'args': []
+// }
 
 
 
 //routes
+
+/*
+Pulling data all post routes.
+server/namespace/name/action
+actions: select/insert/update/delete/truncate
+
+//admin information
+//test assembles full route with documentation
+*/
+
+//query
+
+//include for subsets of model. for column level permissions
+//primary_key for update/delete key sway. usefully if unique field as identity
+//redefined model or add function for something different.
+//specify crud_type for overwrite.
+//hard code query for full dynamic expression.
+//routes route_name: /namespace/name/action
 let routes = {
 
     select: {
@@ -243,141 +287,11 @@ let test_routes = {
 
 
 
-
-
-
-
-// return
-
-
-
-
-
-
-
 /*
-Pulling data all post routes.
-server/namespace/name/action
-actions: select/insert/update/delete/truncate
-
-
-*/
-
-
-
-
-//include for subsets of model. for column level permissions
-//primary_key for update/delete key sway. usefully if unique field as identity
-//redefined model or add function for something different.
-//specify crud_type for overwrite.
-//hard code query for full dynamic expression.
-
-
-
-
-
-
-
-/*
-
-routes
-
-
-test_routes
-
-
-wrap_in jwt_token
-route_gaurd
-user_id
-ui_id: app_module_id, app_permission?
-route_name: /namespace/name/action
-check route_name in linked view config file?
-
-data params
-
-api_route:
-post_route: /
-token:
-data:
-order_by:
-where:
-limit:
-offset:
---maybe quick search just in where string?
-search_filter: "", //string or object with quick filter type:
-search_rank: "", //bool
-
-50
-100kb limit. 5mb a minute upload
-
-config and api route arguments.
-
-test mode returns query on select and template for xyz
-and or query string
-display?
-
-create builder route. still requires direct connections.
-
-/save
-
-route can add parameters for download type on select
-
-
-
-
-
-
-module_api_perms
-
-//route
-//query: 'asdf'
-//batch. add values statement. cte?
-//column order
-// #values
-
-
-
-
-//ui config
-
-
-server crash and restart.
-
-get route displays config
-
-
-//field types
-
-field
-vfield: calculated or read only
-sfield
-
-primary_key: str or array of strings
-
-
-//select only. other fields are inserted
-agfield: 
-ag_value: 
-
-tfield
-timestamps: 
-    created_at
-    updated_at
-    deleted_at
-        // deleted_at: key. select where deleted_at is null
-
-
-truncate: default false
-
-
-bind_type: replacement or bind
-
-
 if replacement :variable_name
 if bind: $variable_name
 the names are automaticaly used correctly if using model object.
 if writing raw query must properly name variables. 
-
 doubling will ignore xyz
 */
 
@@ -393,57 +307,27 @@ doubling will ignore xyz
 // meta?
 
 
-//save requires access to insert/update and deelte
-let post_params = [
-    // Array of objects. Contains information for crud operations.
-    // Operation order is not preserved.
-    {
-        "crud_type": "", //only needed for save route s or select
-        "data": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}] or object
-        "include": [],
-        "transaction_id": null, //name_of field underscore append for multi data
-        //"type_cast": boolean
-    }
-]
-
-//for other route
-//type returned from get route
-//append type
-
-let post_params_2 = {
-    "data": [], // {}
-    "transaction_id": ""
-}
-//or 
-let post_params_3 = [
-    {
-        "crud_type": "",
-        "data": [],
-        "transaction_id": "",
-        "count": 0
-    }
-]
+/*
+Interacting with API as an end users
 
 
-let post_return = [
-    {
 
-        //data: {}
-        //transaction_id: ""
-        //error_msg:
-    }
-]
-
-// "where": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}]
-// "offset": "", //should be integer greater or equal to 0
-// "limit": "", //should be positive integer
-// "search_filter": "", //string or object with quick filter type:
-// "returning": "", //array of fields to used for returning [id, column_1, xxx] //defaults to id?
-// "order_by": ""  // [{'col1': 'asc}, {'col_2': 'desc'}]
+*/
 
 
+//data pull options:
 //for select route
 let select_params = {
+
+    // "on_conflict": "", //string a-zA-Z0-9
+    // "on_constraint": "", //string a-zA-Z0-9
+    // "where": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}]
+    // "offset": "", //should be integer greater or equal to 0
+    // "limit": "", //should be positive integer
+    // "search_filter": "", //string or object with quick filter type:
+    // "returning": "", //array of fields to used for returning [id, column_1, xxx] //defaults to id?
+    // "order_by": ""  // [{'field_name': 'asc}, {'field_name': 'desc'}]
+
 
     order_by: '', //[]
     where: '', //[]
@@ -470,7 +354,6 @@ let select_params = {
         https://stackoverflow.com/questions/12933805/best-way-to-use-postgresql-full-text-search-ranking
     */
 
-
     //filters then search
 
     //if rank. filter then order by?
@@ -493,135 +376,56 @@ let select_params = {
 // sql_token
 
 let select_return = {
-    "crud_type": "",
     data: [],
     error_msg: "",
     count: 0,
     // "types": null
 }
 
-//for all or nothing?
-//defaults to insert, update, delete
-//may only return count of changes.
 
-//one at a time if not explicitly defined
-//type also required for filtering on input
+//data modificaiton structure
 
-// "default_fields": "", //object with default type {x:"default_value_x", y:"default_value_y"}
-// "set_fields": "",  //array that has columns that should be used for set
-// "on_conflict": "", //string a-zA-Z0-9
-// "on_constraint": "", //string a-zA-Z0-9
-// "upsert": "",
-// "where": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}]
-// "offset": "", //should be integer greater or equal to 0
-// "limit": "", //should be positive integer
-// "search_filter": "", //string or object with quick filter type:
-// "returning": "", //array of fields to used for returning [id, column_1, xxx] //defaults to id?
-// "order_by": ""  // [{'field_name': 'asc}, {'field_name': 'desc'}]
-// #env
-// special_names _ag_meta_, _ag_first_name_ ...
-// rls row level security, expression or model
-// column equality
-// filter object, subquery filter
+let post_params = [
+    // Array of objects. Contains information for crud operations.
+    // Operation order is not preserved.
+    {
+        "data": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}] or object
+        "transaction_id": null, //name_of field underscore append for multi data
+        //"type_cast": boolean
+    }
+]
+
+//for other route
+//type returned from get route
+//append type
 
 
+let post_return = [
+    {
 
-
-
-
-
-
-
-
-
-//type is for filters
-//all returned data is as text.
-//send types?
-//client side alias
-
-
-//append null
-//field is bydirectional for interface
-//column is the actual column used in postgres or mysql for name mapping.
-//alias will change them of return column select column as alias 
-//vfield is for computed values for select and filters and order by only. not available as a modification parameter.
-//sfield for text based search or rank. expects a string and 
-
-
-
-// query: {
-//     'description': '',
-//     'args': []
-// }
-
-
-
-//raw query needs required fields if using subset
-//just for knowledge?
-
-
-//query
-//null_query
-
-//undefined values ignored unless required is used and default_value is injected
-//if using raw query default values is accessible.
-//include fields determine what to use.
+        //data: {}
+        //transaction_id: ""
+        //error_msg:
+    }
+]
 
 
 // #set as primary key type
 
 
 /*
+    //require fields
+    //batch_insert/batch_upsert
+    //batch_update 
+    //batch_delete
+    //batch_select
 
-//require fields
-//batch_insert/batch_upsert
-//batch_update 
-//batch_delete
+    //requires data field
+    //filters  map to column constraints?
 
 
-boolean or object
-select: {
-    model: {
-        raw_query:
-        column_order: [] //for values
-        batch_size
+    //best to pull in link data one time if lookups.
+    //best to make sure limit test works?
 
-    }
-    bind_type:
-
-    only:    []
-    require: [] //string or arrayif object if else for multiple keys or composite keys
-    exclude: [] //string or array
-    instead: insert, update, delete, etc
-    primary_key: 
-    return
-}
-
-insert/upsert: {
-    on_conflict:
-    on_constraint:
-}
-update: {
-    primary_key:     require: [] //string or arrayif object if else for multiple keys or composite keys
-}
-
-delete: {
-
-}
-
-if no default value ignore
+    //add repull options for dropdowns?
 */
-
-//undefined value
-//skip undefined?
-//type_cast boolean
-//if_null value
-//user_defined_functions
-
-//raw_query: ""
-//bind_type: replacement or bind
-//values_columns [order]
-//batch_size: 100 default
-
-//returning null, *, []
-//query
