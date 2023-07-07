@@ -1,245 +1,65 @@
 /*
+All routes are post routes this allows json to be sent back and forth. Api calls function
+in three steps.
 
-array of objects or just objects
+1.) route guard and permissions check:
+    checks if users has access to api and if the token sent is valid.
+    tokens 
+2.) query assembly
+3.) database call
 
+post_route:
+auth_bearer_token: jwt_token
+payload:
 
-admin test route
+jwt_token: {
+    user_id: x
+    valid_key: ''
+}
 
-
-wrap_in jwt_token
-route_gaurd
-user_id
-ui_id: app_module_id, app_permission?
-route_name: /namespace/name/action
-check route_name in linked view config file?
-
-
-api_token:
-user_id:
-pwd: tmp //incase need to close
-is_active
-rate_limit
-
-
-
-data params
-
-api_route:
-post_route: /
-token:
-data:
-order_by:
-where:
-limit:
-offset:
---maybe quick search just in where string?
-search_filter: "", //string or object with quick filter type:
-search_rank: "", //bool
+user_id and valid_key act as a pseudo username/password thats checked in the database for equivalency. If 
+a jwt requires to be revoked the valid_key for the user can be changed in the database. The user would need
+a new jwt_token with the updated valid_key
 
 
-config and api route arguments.
+Get routes will display informations on the api for calling and testing.
 
-test mode returns query on select and template for xyz
-and or query string
-display?
-
-create builder route. still requires direct connections.
-
-/save
-
-route can add parameters for download type on select
-
-
-
-
-
-
-module_api_perms
-
-//route
-//query: 'asdf'
-//batch. add values statement. cte?
-//column order
-// #values
-
-
-
-
-//ui config
-
-
-server crash and restart.
-
-get route displays config
-
-// "default_fields": "", //object with default type {x:"default_value_x", y:"default_value_y"}
-// "set_fields": "",  //array that has columns that should be used for set
-// "on_conflict": "", //string a-zA-Z0-9
-// "on_constraint": "", //string a-zA-Z0-9
-// "upsert": "",
-// "where": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}]
-// "offset": "", //should be integer greater or equal to 0
-// "limit": "", //should be positive integer
-// "search_filter": "", //string or object with quick filter type:
-// "returning": "", //array of fields to used for returning [id, column_1, xxx] //defaults to id?
-// "order_by": ""  // [{'col1': 'asc}, {'col_2': 'desc'}]
-// #env
-// special_names _ag_meta_, _ag_first_name_ ...
-// rls row level security, expression or model
-// column equality
-// filter object, subquery filter
-
-//field types
-
-field
-vfield
-sfield
-
-primary_key: str or array of strings
-
-
-agfield: 
-
-tfield
-timestamps: 
-    created_at
-    updated_at
-    deleted_at
-        // deleted_at: key. select where deleted_at is null
-
-
-truncate: default false
-
-
-bind_type: replacement or bind
-
-
-if replacement :variable_name
-if bind: $variable_name
-the names are automaticaly used correctly if using model object.
-if writing raw query must properly name variables. 
-
-doubling will ignore xyz
+Routes can be built with pseudo code using the model syntax or each route can be
+explicitly wrote with pure sql
 */
 
 
-
-//test_prod is sync
-
-
-//for save route ui only
-let post_params = [
-    // Array of objects. Contains information for crud operations.
-    // Operation order is not preserved.
-    {
-        "crud_type": "", //only needed for save route s or select
-        "data": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}] or object
-        "include": [],
-        "transaction_id": null //name_of field underscore append for multi data
-        //"type_cast": boolean
-    }
-]
-
-//for other route
-let post_params_2 = {
-    "data": [], // {}
-    "transaction_id": ""
-}
-//or 
-let post_params_3 = [
-    {
-        "crud_type": "",
-        "data": [],
-        "transaction_id": ""
-    }
-]
-
-
-let post_return = [
-    {
-
-        //data: {}
-        //transaction_id: ""
-        //error_msg:
-    }
-]
-
-
-//for select route
-let select_params = {
-
-    order_by: '', //[]
-    where: '', //[]
-    //operator ignored search_filter number or rank search_filter: "", //string or object with quick filter type
-
-    limit: '',
-    offset: '',
-    //for mapping. provides a set of null values to search against
-    //union as first or last column in select and set as null?
-    prepend_null: '',
-    append_null: '',
-    /*
-        data:  [],
-        types: {}
-    */
-    "type_cast": [], //true
-    //type_cast select values?
-
-    
-    //'boolean', //just dont wrap into text
-    "include": [] //return list of fields
-}
-
-// sql_token
-
-let select_return = {
-    "crud_type": "",
-    data: [],
-    error_msg: ""
-}
-
-
-
-//type is for filters
-//all returned data is as text.
-//send types?
-//client side alias
-
-
-//append null
-//field is bydirectional for interface
-//column is the actual column used in postgres or mysql for name mapping.
-//alias will change them of return column select column as alias 
-//vfield is for computed values for select and filters and order by only. not available as a modification parameter.
-//sfield for text based search or rank. expects a string and 
-
-x = {
-    model:{
+let model = {
         'schema': None,
         'name': None,
         'test_schema': None,
         'test_name': None,
 
-        'bind_type': null,
+        'bind_type': null, //replacement or bind
         'description': '',
 
-        'batch_size': null, //defaults to 1. does nothing yet for bulk_insert/ bulk_update/ bulk_delete
-        //for all or nothing?
-        //defaults to insert, update, delete
-        //may only return count of changes.
-
-        //one at a time if not explicitly defined
-        //type also required for filtering on input
 
         //deleted_at: true
-
         'upsert': {
             // "on_conflict": "", //string a-zA-Z0-9 name: //set_fields if missing or empty do_nothing
             // "on_constraint": "", //string a-zA-Z0-9 name: //set_fields or do_nothing 
             // "do_nothing"
         },
 
-        'rls': "", //equality or expression added as where statement
+        'rls': "", //boolean expression. wrapped into where statement.
+        //string template for where statement allows quick rls for model
+
+        /*
+            INSERT INTO table2
+            SELECT * FROM table1
+            WHERE condition;
+
+            INSERT INTO table2 (column1, column2, column3, ...)
+            SELECT column1, column2, column3, ...
+            FROM table1
+            WHERE condition;
+        */
+
 
         // insert into LeadCustomer (Firstname, Surname, BillingAddress, email)
         // select 
@@ -247,6 +67,9 @@ x = {
         //     '6 Brewery close, Buxton, Norfolk', 'cmp.testing@example.com'
         // where not exists (
         //     select 1 from leadcustomer where firstname = 'John' and surname = 'Smith'
+        //  SELECT * FROM (VALUES (1, 'one'), (2, 'two'), (3, 'three')) AS t (num,letter);
+
+
         // );
 
 
@@ -256,18 +79,18 @@ x = {
         'columns': [
             // #primary key
             //field column alias
-            { 'field': 'id', 'column': 'id', 'alias': '',            'type': 'bigint', 'description': '',  'allow_null': False, 'default_value': ''},
-            {'column': 'first_name',     'type': 'text', 'description': '',    'allow_null': False, 'default_value': '', 'alias': ''  },
-            {'column': 'middle_name',    'type': 'text', 'description': '',    'allow_null': False, 'default_value': '', 'alias': ''  },
-            {'column': 'last_name',      'type': 'text', 'description': '',    'allow_null': False, 'default_value': '', 'alias': ''  },
-            {'column': 'email',          'type': 'text', 'description': '',    'allow_null': False, 'default_value': '', 'alias': ''  },
-            {'column': 'oauth_id',       'type': 'text',   'description': '',  'allow_null': False, 'default_value': '', 'alias': ''  },
-            {'column': 'api_rate',       'type': 'bigint', 'description': '',  'allow_null': False, 'default_value': '', 'alias': ''  },
-            {'column': 'is_admin',       'type': 'boolean','description': '',  'allow_null': False, 'default_value': '', 'alias': ''  },
-            {'column': 'password',       'type': 'text', 'description': '',    'allow_null': False, 'default_value': '', 'alias': ''  },
-            {'column': 'is_tmp_password','type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '', 'alias': ''  },
-            {'column': 'created_at',     'type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '', 'alias': ''  },
-            {'column': 'updated_at',     'type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '', 'alias': ''  },
+            { 'field': 'id', 'column': 'id',             'type': 'bigint', 'description': '',  'allow_null': False, 'default_value': ''},
+            {'column': 'first_name',     'type': 'text', 'description': '',    'allow_null': False, 'default_value': '',   },
+            {'column': 'middle_name',    'type': 'text', 'description': '',    'allow_null': False, 'default_value': '',   },
+            {'column': 'last_name',      'type': 'text', 'description': '',    'allow_null': False, 'default_value': '',   },
+            {'column': 'email',          'type': 'text', 'description': '',    'allow_null': False, 'default_value': '',   },
+            {'column': 'oauth_id',       'type': 'text',   'description': '',  'allow_null': False, 'default_value': '',   },
+            {'column': 'api_rate',       'type': 'bigint', 'description': '',  'allow_null': False, 'default_value': '',   },
+            {'column': 'is_admin',       'type': 'boolean','description': '',  'allow_null': False, 'default_value': '',   },
+            {'column': 'password',       'type': 'text', 'description': '',    'allow_null': False, 'default_value': '',   },
+            {'column': 'is_tmp_password','type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '',   },
+            {'column': 'created_at',     'type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '',   },
+            {'column': 'updated_at',     'type': 'boolean', 'description': '', 'allow_null': False, 'default_value': '',   },
 
             {'ag_field': '' , 
                 'ag_type': '',
@@ -341,24 +164,14 @@ x = {
         //vfield for searching tsvector, tsquery
         ,
 
-        'max_rows': false,
+        'max_rows': false, //number
         //50000
 
-        //flag for server modification only
         'primary_key': '', //defaults to id or [ ] for composite
         'exclude_pk_insert': true, //default true. doesnt allow insert to pass for model based query
-        'bind_type:': null,
         'ignore_undefined': true,// for dynamic assembly only. default_value to filter in raw query. default value is null by default?
-        //trigger_value always set by server. as raw sting. user has no choice
-        //deleted_at use trigger_value check options i.e 'sd' on crud_type for created_at use si
-        //must contain atleast one value to update for update or delete?
-        //deleted_at is datetime column: column, value:
-        'where': '', //string template for where statement allows quick rls for model
-        // batch_size
-        //filter
-        // 'upsert': 
-        // deleted_at: key. select where deleted_at is null
-        // values
+
+
         // instead: insert, update, delete, etc
         // return: * or string or array of strings
         //where predicate for views? conditionals
@@ -370,9 +183,277 @@ x = {
         //     on_conflict:
         //     on_constraint:
         // }
-    },
+        'batch_size': null, //defaults to 1. does nothing yet for bulk_insert/ bulk_update/ bulk_delete
 
 }
+
+
+
+
+
+// return
+
+
+
+
+
+
+
+/*
+Pulling data all post routes.
+server/namespace/name/action
+actions: select/insert/update/delete/truncate
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+routes
+
+
+test_routes
+
+
+wrap_in jwt_token
+route_gaurd
+user_id
+ui_id: app_module_id, app_permission?
+route_name: /namespace/name/action
+check route_name in linked view config file?
+
+data params
+
+api_route:
+post_route: /
+token:
+data:
+order_by:
+where:
+limit:
+offset:
+--maybe quick search just in where string?
+search_filter: "", //string or object with quick filter type:
+search_rank: "", //bool
+
+50
+100kb limit. 5mb a minute upload
+
+config and api route arguments.
+
+test mode returns query on select and template for xyz
+and or query string
+display?
+
+create builder route. still requires direct connections.
+
+/save
+
+route can add parameters for download type on select
+
+
+
+
+
+
+module_api_perms
+
+//route
+//query: 'asdf'
+//batch. add values statement. cte?
+//column order
+// #values
+
+
+
+
+//ui config
+
+
+server crash and restart.
+
+get route displays config
+
+
+//field types
+
+field
+vfield: calculated or read only
+sfield
+
+primary_key: str or array of strings
+
+
+//select only. other fields are inserted
+agfield: 
+ag_value: 
+
+tfield
+timestamps: 
+    created_at
+    updated_at
+    deleted_at
+        // deleted_at: key. select where deleted_at is null
+
+
+truncate: default false
+
+
+bind_type: replacement or bind
+
+
+if replacement :variable_name
+if bind: $variable_name
+the names are automaticaly used correctly if using model object.
+if writing raw query must properly name variables. 
+
+doubling will ignore xyz
+*/
+
+
+
+//test_prod is sync
+
+
+//for save route ui only
+let post_params = [
+    // Array of objects. Contains information for crud operations.
+    // Operation order is not preserved.
+    {
+        "crud_type": "", //only needed for save route s or select
+        "data": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}] or object
+        "include": [],
+        "transaction_id": null //name_of field underscore append for multi data
+        //"type_cast": boolean
+    }
+]
+
+//for other route
+let post_params_2 = {
+    "data": [], // {}
+    "transaction_id": ""
+}
+//or 
+let post_params_3 = [
+    {
+        "crud_type": "",
+        "data": [],
+        "transaction_id": "",
+        "count": 0
+    }
+]
+
+
+let post_return = [
+    {
+
+        //data: {}
+        //transaction_id: ""
+        //error_msg:
+    }
+]
+
+// "where": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}]
+// "offset": "", //should be integer greater or equal to 0
+// "limit": "", //should be positive integer
+// "search_filter": "", //string or object with quick filter type:
+// "returning": "", //array of fields to used for returning [id, column_1, xxx] //defaults to id?
+// "order_by": ""  // [{'col1': 'asc}, {'col_2': 'desc'}]
+
+
+//for select route
+let select_params = {
+
+    order_by: '', //[]
+    where: '', //[]
+    //operator ignored search_filter number or rank search_filter: "", //string or object with quick filter type
+
+    limit: '',
+    offset: '',
+    //for mapping. provides a set of null values to search against
+    //union as first or last column in select and set as null?
+    prepend_null: '',
+    append_null: '',
+    /*
+        data:  [],
+        types: {}
+    */
+    "type_cast": [], //true
+    //type_cast select values?
+
+    
+    //'boolean', //just dont wrap into text
+    "include": [] //return list of fields
+}
+
+// sql_token
+
+let select_return = {
+    "crud_type": "",
+    data: [],
+    error_msg: "",
+    count: 0
+}
+
+//for all or nothing?
+//defaults to insert, update, delete
+//may only return count of changes.
+
+//one at a time if not explicitly defined
+//type also required for filtering on input
+
+// "default_fields": "", //object with default type {x:"default_value_x", y:"default_value_y"}
+// "set_fields": "",  //array that has columns that should be used for set
+// "on_conflict": "", //string a-zA-Z0-9
+// "on_constraint": "", //string a-zA-Z0-9
+// "upsert": "",
+// "where": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}]
+// "offset": "", //should be integer greater or equal to 0
+// "limit": "", //should be positive integer
+// "search_filter": "", //string or object with quick filter type:
+// "returning": "", //array of fields to used for returning [id, column_1, xxx] //defaults to id?
+// "order_by": ""  // [{'field_name': 'asc}, {'field_name': 'desc'}]
+// #env
+// special_names _ag_meta_, _ag_first_name_ ...
+// rls row level security, expression or model
+// column equality
+// filter object, subquery filter
+
+
+
+
+
+
+
+
+
+
+
+//type is for filters
+//all returned data is as text.
+//send types?
+//client side alias
+
+
+//append null
+//field is bydirectional for interface
+//column is the actual column used in postgres or mysql for name mapping.
+//alias will change them of return column select column as alias 
+//vfield is for computed values for select and filters and order by only. not available as a modification parameter.
+//sfield for text based search or rank. expects a string and 
+
+
 
 // query: {
 //     'description': '',

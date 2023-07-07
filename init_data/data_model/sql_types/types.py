@@ -4,7 +4,7 @@
 # text
 # string.binary
 # citext
-# tscvector
+# tscvector and tsquery
 # boolean
 # integer
 # bigint

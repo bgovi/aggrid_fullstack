@@ -31,3 +31,10 @@
 
 // refresh redis button
 // update redis cache with user
+
+
+// api_token:
+// user_id:
+// pwd: tmp //incase need to close
+// is_active
+// rate_limit
