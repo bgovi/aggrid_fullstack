@@ -397,7 +397,7 @@ let routes = {
 
     },
     // deleted_at: "update column"
-    truncate: {} //true defaults to false
+    truncate: {} //boolean //true defaults to false
 }
 
 //test_model for separate set if test_schema or test_name not defined
@@ -435,12 +435,6 @@ Interacting with API as an end users
 
 //allow array? has hard coded limit
 let select_query = {
-
-    // "offset": "", //should be integer greater or equal to 0
-    // "limit": "", //should be positive integer
-    // "search": "", //string or object with quick filter type:
-    // "returning": "", //array of fields to used for returning [id, column_1, xxx] //defaults to id?
-
     order_by: '', // "order_by": ""  // [{'field_name': 'asc}, {'field_name': 'desc'}]
     where: '', //[]
     // "where": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}]
@@ -449,46 +443,47 @@ let select_query = {
     limit: '',
     offset: '',
 
-    search: {}, //rank or text search
-    // "search": "", //string or object with quick filter type:
-
-    //for mapping. provides a set of null values to search against
-    //union as first or last column in select and set as null?
-    null: true ,///false//'',
-    "returning": [] //return list of fields
-    //defaults to all columns
+    search: {}, //rank or text search. need to add search structure
+    null: true ,//adds null to returned results. using for mapping and dropdown',
+    "returning": [], //return list of fields //defaults to all columns
+    tid: null
 }
+
+let select_param = { select_query}
+
+//sends several select request. each request only allows for 1 value maximum to be returned
+//generally used to search or map several data points in a single request.
+let select_params = [
+    { select_query_1},
+    { select_query_2},
+    { select_query_3}
+    //...
+]
+
+
+
 
 let modify_query = {
         "data":  {}, //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}] or object
-        "transaction_id": null, //name_of field underscore append for multi data
+        "tid": null, //transaction id. used to keep track of input and output results.
         "returning": ['id', 'column_1', 'xxx']
         //tid for short
         //defaults to id?
 }
 
-
-//map alias for search meant for batch structure?
-
-
-//data modificaiton structure
+//data modificaiton structure individual
+let post_param_ = {
+    modify_query
+}
 
 let post_params = [
     // Array of objects. Contains information for crud operations.
     // Operation order is not preserved.
-
+    modify_query_1,
+    modify_query_2,
+    modify_query_3
+    //...
 ]
-
-let post_params_ = {
-    data: {},
-    transaction_id: null
-}
-
-
-//for other route
-//type returned from get route
-//append type
-
 
 //api return structure
 let return_object = {
@@ -503,5 +498,5 @@ let return_object = {
         //if batch each request has a separate object
     ],
     error: (str),
-    types: {}
+    types: {} //column_name or alias as key. type as value
 }

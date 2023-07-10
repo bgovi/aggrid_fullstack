@@ -20,14 +20,15 @@
 
 */
 
-
+// 100 requests
 // api_token:
 // user_id:
 // pwd: tmp //incase need to close
 // is_active
 // rate_limit for select and modification?
 
-//max payload and size.
+//max_payload_size.
+//reject on quick length test.
 
 // refresh redis button
 // update redis cache with user
