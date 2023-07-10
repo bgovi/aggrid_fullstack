@@ -447,6 +447,8 @@ let select_query = {
     null: true ,//adds null to returned results. using for mapping and dropdown',
     "returning": [], //return list of fields //defaults to all columns
     tid: null
+
+    //how to send file?
 }
 
 let select_param = { select_query}

@@ -27,9 +27,10 @@
 // is_active
 // rate_limit for select and modification?
 
-//max_payload_size.
-//reject on quick length test.
+//max_upload_size this converts to number of rows in modify/select params
+//max_download_size this converts to a limit
 
+//reject on quick length test.
 // refresh redis button
 // update redis cache with user
 
