@@ -91,3 +91,13 @@ import modules
 
 //mapping
 //column_matching
+
+//filters  map to column constraints?
+
+
+//best to pull in link data one time if lookups.
+//best to make sure limit test works?
+
+//add repull options for dropdowns?
+
+//requires data field

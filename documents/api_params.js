@@ -163,6 +163,9 @@ let model = {
             },
             //search string field. string comming from user, can add multiple columns as input
             //first input alwasy user string.
+
+            //operator ignored search_filter number or rank search_filter: "", //string or object with quick filter type
+            //rank added in select clause. used as where and order by. removed from final return query
             {'sfield':'search_string', 'column': '',  'alias': '', 'type': 'boolean',
                 // true/false or threshold
 
@@ -432,76 +435,38 @@ Interacting with API as an end users
 //for select route
 
 //allow array? has hard coded limit
-let select_params = {
+let select_query = {
 
-
-    // "on_conflict": "", //string a-zA-Z0-9
-    // "on_constraint": "", //string a-zA-Z0-9
-    // "where": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}]
     // "offset": "", //should be integer greater or equal to 0
     // "limit": "", //should be positive integer
-    // "search_filter": "", //string or object with quick filter type:
+    // "search": "", //string or object with quick filter type:
     // "returning": "", //array of fields to used for returning [id, column_1, xxx] //defaults to id?
-    // "order_by": ""  // [{'field_name': 'asc}, {'field_name': 'desc'}]
 
-    order_by: '', //[]
+    order_by: '', // "order_by": ""  // [{'field_name': 'asc}, {'field_name': 'desc'}]
     where: '', //[]
+    // "where": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}]
+
+    //pagination limit and offset should be positive integers > 0
     limit: '',
     offset: '',
 
     search: {}, //rank or text search
-    //operator ignored search_filter number or rank search_filter: "", //string or object with quick filter type
-    //rank added in select clause. used as where and order by. removed from final return query
-
-
-
-    //filters then search
-
-    //if rank. filter then order by?
+    // "search": "", //string or object with quick filter type:
 
     //for mapping. provides a set of null values to search against
     //union as first or last column in select and set as null?
     null: true ,///false//'',
-    /*
-        data:  [],
-        types: {}
-    */
-
-
-    //'boolean', //just dont wrap into text
-    "include": [] //return list of fields
+    "returning": [] //return list of fields
+    //defaults to all columns
 }
 
-// sql_token
-let select_return = {
- 
-        output: [
-            {
-                data: [{}],
-                transaction_id: "",
-                error_msg: '',
-                count: ''
-            }
-        ],
-        error: (str),
-        types: {}
+let modify_query = {
+        "data":  {}, //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}] or object
+        "transaction_id": null, //name_of field underscore append for multi data
+        "returning": ['id', 'column_1', 'xxx']
+        //tid for short
+        //defaults to id?
 }
-// if batch array?
-let select_return_batch = {
- 
-    output: [
-        {
-            data: [{}], //limit 1 probably?
-            transaction_id: "",
-            error_msg: '',
-            count: ''
-        }
-        //multiple objects
-    ],
-    error: (str),
-    types: {}
-}
-
 
 
 //map alias for search meant for batch structure?
@@ -512,51 +477,32 @@ let select_return_batch = {
 let post_params = [
     // Array of objects. Contains information for crud operations.
     // Operation order is not preserved.
-    {
-        "data":  {}, //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}] or object
-        "transaction_id": null, //name_of field underscore append for multi data
-        //tid for short
-    }
+
 ]
+
+let post_params_ = {
+    data: {},
+    transaction_id: null
+}
+
 
 //for other route
 //type returned from get route
 //append type
 
 
-let post_return =
-{
-    //types:
-    /*
-    //output: 
-        [{
-            //data: [{}]
-            //transaction_id: ""
-            //error_msg:
-        }]
-    error:
-    */
+//api return structure
+let return_object = {
+ 
+    output: [
+        {
+            data: [{}],
+            transaction_id: "",
+            error_msg: '',
+            count: ''
+        }
+        //if batch each request has a separate object
+    ],
+    error: (str),
+    types: {}
 }
-
-
-// #set as primary key type
-/*
-    //require fields
-    //require
-
-    //{{values}}
-
-    //batch_insert/batch_upsert
-    //batch_update 
-    //batch_delete
-    //batch_select
-
-    //requires data field
-    //filters  map to column constraints?
-
-
-    //best to pull in link data one time if lookups.
-    //best to make sure limit test works?
-
-    //add repull options for dropdowns?
-*/
