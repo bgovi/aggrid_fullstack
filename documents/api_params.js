@@ -103,6 +103,7 @@ let model = {
         'upsert': {
             // "on_conflict": "", //string a-zA-Z0-9 name: //set_fields if missing or empty do_nothing
             //  set [] //column_names with escapes required?
+            //  not_set columns?
             // "on_constraint": "", //string a-zA-Z0-9 name: //set_fields or do_nothing 
             // "do_nothing"
             //  upsert requires set or do nothing
@@ -126,7 +127,7 @@ let model = {
         //alias will change them of return column select column as alias 
         //vfield is for computed values for select and filters and order by only. not available as a modification parameter.
         //sfield for text based search or rank. expects a string and 
-        'columns': [
+        'interface': [
             // #primary key
             //field column alias alias
             { 'field': 'id',         'column': 'id',         'type': 'bigint',  'description': '',  'default_value': ''},
@@ -239,7 +240,8 @@ let model = {
 
 // query: {
 //     'description': '',
-//     'args': []
+//     'interface': []
+//     'str: []
 // }
 
 
@@ -385,9 +387,6 @@ let routes = {
     insert: {
             //optional 
             //do_instead: ''
-
-        //upsert: {}
-
     },
     //upsert: {} 
     update: {},
