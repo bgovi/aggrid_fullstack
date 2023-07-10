@@ -23,13 +23,11 @@ a new jwt_token with the updated valid_key
 
 
 Get routes will display informations on the api for calling and testing.
-get_routes
+get_routes meta information. allow for search string?
 
-meta information
-documentation
-types
-interface
-dev
+api: runs queries from post routes
+test_api. returns assembled query for test routes
+prod_api. returns assembled query for production routes
 
 
 
@@ -38,11 +36,45 @@ explicitly wrote with pure sql
 
 
 bullk would be a json array thats parrsed?
-*/
+
 
 //app should only have table read write permissions.
 //table creation and deletion controlloed by separate connection.
 //admin conneciton explicitly gives permissions to app
+
+//user interface structure
+field: expected to be used for pull and push operations. maps to the column name
+    fields can only be alphanumeric which prevents injection
+vfield: expected to be pulled only. might be a calculation or some other operations
+agfield: used for pull and push. however the push data is handled by the server.
+    examples are raw expressions that are added or the user_id of the individual
+    making the change or the now() function used to track when the operation occured.
+sfield: used for text search against rows. generally not returned only used for 
+    searching and ranking.
+
+//database structure
+column: this is the name of the column in the actual table. field maps to the column name
+    when running queries
+alias: used to change the name of the column being returned.
+
+
+
+Input structure
+
+
+
+
+Output structure
+
+output structure
+
+types: //type information for column. everything is returned as a string
+output: // output structure
+error: //route error. i.e. permission denied or some other global issue.
+
+*/
+
+
 
 //use defaults at the sql level if possible
 let model = {
@@ -51,6 +83,7 @@ let model = {
         'name': "table_name",
         'test_schema': "test_schema",
         'test_name': "table_name",
+        //if using test schema and test_name the columns are expected to match exactly
         'description': '',
 
         'bind_type': null, //replacement or bind
@@ -58,40 +91,27 @@ let model = {
         if replacement :variable_name
         if bind: $variable_name
         the names are automaticaly used correctly if using model object.
-        if writing raw query must properly name variables. 
+        if writing raw query or expression must properly name variables. 
         doubling will ignore xyz
+
+        :variable_name for replacement
+        $variable_name for bind parameter
         */
 
 
         //deleted_at: true
         'upsert': {
             // "on_conflict": "", //string a-zA-Z0-9 name: //set_fields if missing or empty do_nothing
-            //  set
+            //  set [] //column_names with escapes required?
             // "on_constraint": "", //string a-zA-Z0-9 name: //set_fields or do_nothing 
             // "do_nothing"
+            //  upsert requires set or do nothing
         },
 
         'rls': "", //boolean expression. wrapped into where statement.
         //string template for where statement allows quick rls for model
 
-        /*
-            INSERT INTO table2
-            SELECT * FROM table1
-            WHERE condition;
 
-            INSERT INTO table2 (column1, column2, column3, ...)
-            SELECT column1, column2, column3, ...
-            FROM table1
-            WHERE condition;
-
-            // insert into LeadCustomer (Firstname, Surname, BillingAddress, email)
-            // select 
-            //     'John', 'Smith', 
-            //     '6 Brewery close, Buxton, Norfolk', 'cmp.testing@example.com'
-            // where not exists (
-            //     select 1 from leadcustomer where firstname = 'John' and surname = 'Smith'
-            //  SELECT * FROM (VALUES (1, 'one'), (2, 'two'), (3, 'three')) AS t (num,letter);
-        */
 
 
         //error_meaning for constraints
@@ -120,7 +140,9 @@ let model = {
             //modification rules. server inserts infor. does query have any say?
             //has defaults
 
-            //on_insert, on_update, on_delete, mutation information handled by server.
+            //on_insert, on_update, on_delete, on_input. mutation information handled by server.
+            //on_input if field is in json value is replaced by server. otherwise left as undefined.
+            //on_insert, on_update adds fields regardless on these operations.
             //user allowed to delete
             {'agfield': 'updated_at' , 'agtype': 'updated_at', 'column': 'updated_at'},
             {'agfield': 'created_at' , 'agtype': 'created_at', 'column': 'Creataed At'},
@@ -145,35 +167,45 @@ let model = {
                 // true/false or threshold
 
                 //input type cast
-
                 //input keys with default for json
 
                 //search_columns: []  //casted so string and concatenated with space?
                 //or string for specific_column ?
-
-
                 //output_type filter type
-
                 //enforce json
-
                 // compare_columns?
                 // operator
 
                 'description': '', 'allow_null': False, 'default_value': '', 'alias': '',
                 'return': false,
-                //operator
+                //operator: how to define tsquery and tsvector operation?
+                //how to handle numerical operations?
+                //now to handle null?
+
+                /*
+                function syntax args parameter is same as column structure in model
+                'function': {
+                    'schema': '',
+                    'name': '',
+                    'args': [
+                        { 'field':  'name', 'required': true, 'default_value': ''}, //field used to inject user values
+                        { 'column': 'name'},  //column used to add table columns in funciton call
+                        { 'expression': 'name'} //add raw string as component. may require access to now() for example
+                    ]
+                },
+                */
+
 
                 'function': {
                     'schema': '',
                     'name': '',
                     'args': [
-                        { 'field':  'name', 'required': true},
-                        { 'field':  'name', 'default_value': '' },
-                        { 'expression': 'sql text'}
+                        { 'field':  'search_string', 'required': true},
+                        { 'column':  'name'} 
                     ]
                 },
+                //this is a raw string that is injected into the query
                 "expression": ""
-
             }
         ]   
         ,
@@ -184,38 +216,128 @@ let model = {
         'primary_key': '', //defaults to id or [ ] for composite
         'exclude_pk_insert': true, //default true. doesnt allow insert to pass for model based query
         'ignore_undefined': true,// for dynamic assembly only. default_value to filter in raw query.
-        // default value is null by default?
-        // truncate: default false not implemented
-        //
 
-        // include syntax
-        // primary_key for update/delete if other primary key is required
-        //'do_instead': null // for route use only. overwrites how route is dynamically generated.
-        // otherwise query will be generated based on route it is created in
 
-        //undefined values ignored unless required is used and default_value is injected
-        //if using raw query default values is accessible.
-        //include fields determine what to use.
+        //optional in specific route definitions to change default behavior
+        /*
+        primary_key for update/delete if other primary key is required
+        'do_instead': null // for route use only. overwrites how route is dynamically generated.
+            otherwise query will be generated based on route it is created in.
+            options are select, insert, update, delete. this is ignored for select route.
+
+            undefined values ignored unless required is used and default_value is injected
+            if using raw query default values is accessible.
+            include fields determine what to use.
+        */
 
 };
 
-/*
-function syntax args parameter is same as column structure in model
-'function': {
-    'schema': '',
-    'name': '',
-    'args': [
-        { 'field':  'name', 'required': true, 'default_value': ''},
-        { 'column': 'name'},
-        { 'expression': 'name'}
-    ]
-},
-*/
+
 
 // query: {
 //     'description': '',
 //     'args': []
 // }
+
+
+
+
+/*
+query assembly select
+
+
+Select cast (column_1 as text ) as alias_1,
+    cast (column_2 as text ) as alias_2
+    FROM (
+        --null option here with type cast to match types
+        --if null should be excluded remove flag.
+
+        UNION ALL
+
+        Select column_1, column_2, text_filter as text_filter from table
+        //coalesce null for text_filter
+        --filters
+    ) "a"
+    --text_filter here?
+    --order_by
+    --add order_by text filter here
+
+--if null injection
+
+
+Select cast (column_1 as text ) as alias_1,
+    cast (column_2 as text ) as alias_2
+    FROM (
+        select null::column_1_type, null::column_2_type
+            UNION ALL
+        Select column_1, column_2,  from table
+        --filters
+    ) "a"
+    --text_filter here?
+    --order_by
+
+
+
+
+query assembly rls
+    INSERT INTO table2
+    SELECT * FROM table1
+    WHERE condition;
+
+    INSERT INTO table2 (column1, column2, column3, ...)
+    SELECT column1, column2, column3, ...
+    FROM table1
+    WHERE condition;
+
+// insert into LeadCustomer (Firstname, Surname, BillingAddress, email)
+// select 
+//     'John', 'Smith', 
+//     '6 Brewery close, Buxton, Norfolk', 'cmp.testing@example.com'
+// where not exists (
+//     select 1 from leadcustomer where firstname = 'John' and surname = 'Smith'
+//  SELECT * FROM (VALUES (1, 'one'), (2, 'two'), (3, 'three')) AS t (num,letter);
+
+
+//ts_ran and tas query?
+
+    select *
+    from (
+        SELECT
+            pictures.id,
+            ts_rank_cd(to_tsvector('english', pictures.title), 
+            to_tsquery('small dog')) AS score
+        FROM pictures
+        --filters go here--
+    ) s
+    WHERE score > 0
+    ORDER BY score DESC
+
+https://stackoverflow.com/questions/12933805/best-way-to-use-postgresql-full-text-search-ranking
+
+
+query assembly insert/update/delete
+
+
+
+appending nulls
+
+
+
+
+
+return type. everything casted to string. how to handle big int. big numbers
+and datetime.
+
+
+cast(column as text) as alias
+
+*/
+
+
+
+
+
+
 
 
 
@@ -308,7 +430,10 @@ Interacting with API as an end users
 
 //data pull options:
 //for select route
+
+//allow array? has hard coded limit
 let select_params = {
+
 
     // "on_conflict": "", //string a-zA-Z0-9
     // "on_constraint": "", //string a-zA-Z0-9
@@ -319,7 +444,6 @@ let select_params = {
     // "returning": "", //array of fields to used for returning [id, column_1, xxx] //defaults to id?
     // "order_by": ""  // [{'field_name': 'asc}, {'field_name': 'desc'}]
 
-
     order_by: '', //[]
     where: '', //[]
     limit: '',
@@ -329,21 +453,7 @@ let select_params = {
     //operator ignored search_filter number or rank search_filter: "", //string or object with quick filter type
     //rank added in select clause. used as where and order by. removed from final return query
 
-    /*
-        select *
-        from (
-            SELECT
-                pictures.id,
-                ts_rank_cd(to_tsvector('english', pictures.title), 
-                to_tsquery('small dog')) AS score
-            FROM pictures
-            --filters go here--
-        ) s
-        WHERE score > 0
-        ORDER BY score DESC
 
-        https://stackoverflow.com/questions/12933805/best-way-to-use-postgresql-full-text-search-ranking
-    */
 
     //filters then search
 
@@ -351,13 +461,11 @@ let select_params = {
 
     //for mapping. provides a set of null values to search against
     //union as first or last column in select and set as null?
-    prepend_null: '',
-    append_null: '',
+    null: true ,///false//'',
     /*
         data:  [],
         types: {}
     */
-
 
 
     //'boolean', //just dont wrap into text
@@ -365,13 +473,38 @@ let select_params = {
 }
 
 // sql_token
-
 let select_return = {
-    data: [],
-    error_msg: "",
-    count: 0,
-    // "types": null
+ 
+        output: [
+            {
+                data: [{}],
+                transaction_id: "",
+                error_msg: '',
+                count: ''
+            }
+        ],
+        error: (str),
+        types: {}
 }
+// if batch array?
+let select_return_batch = {
+ 
+    output: [
+        {
+            data: [{}], //limit 1 probably?
+            transaction_id: "",
+            error_msg: '',
+            count: ''
+        }
+        //multiple objects
+    ],
+    error: (str),
+    types: {}
+}
+
+
+
+//map alias for search meant for batch structure?
 
 
 //data modificaiton structure
@@ -380,9 +513,9 @@ let post_params = [
     // Array of objects. Contains information for crud operations.
     // Operation order is not preserved.
     {
-        "data": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}] or object
+        "data":  {}, //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}] or object
         "transaction_id": null, //name_of field underscore append for multi data
-        //"type_cast": boolean
+        //tid for short
     }
 ]
 
@@ -391,19 +524,28 @@ let post_params = [
 //append type
 
 
-let post_return = [
-    {
-
-        //data: {}
-        //transaction_id: ""
-        //error_msg:
-    }
-]
+let post_return =
+{
+    //types:
+    /*
+    //output: 
+        [{
+            //data: [{}]
+            //transaction_id: ""
+            //error_msg:
+        }]
+    error:
+    */
+}
 
 
 // #set as primary key type
 /*
     //require fields
+    //require
+
+    //{{values}}
+
     //batch_insert/batch_upsert
     //batch_update 
     //batch_delete
