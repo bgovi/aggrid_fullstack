@@ -144,7 +144,7 @@ let model = {
             //on_insert, on_update, on_delete, on_input. mutation information handled by server.
             //on_input if field is in json value is replaced by server. otherwise left as undefined.
             //on_insert, on_update adds fields regardless on these operations.
-            //user allowed to delete
+            //user allowed to delete on_select. can it be pulled?
             {'agfield': 'updated_at' , 'agtype': 'updated_at', 'column': 'updated_at'},
             {'agfield': 'created_at' , 'agtype': 'created_at', 'column': 'Creataed At'},
             {'agfield': 'deleted_at' , 'agtype': 'deleted_at'}, //expression
