@@ -27,6 +27,8 @@
 // is_active
 // rate_limit for select and modification?
 
+
+//max_requests: 100 in token?
 //max_upload_size this converts to number of rows in modify/select params
 //max_download_size this converts to a limit
 
