@@ -43,6 +43,9 @@
 
 //select 1 WHERE 'world' ILIKE ANY ( SELECT '%' || unnest(  ARRAY_REMOVE(STRING_TO_ARRAY('Hello World OpenAI', ' '), '') ) || '%' )
 //select 1 WHERE 'world' ILIKE ANY ( SELECT '%' || unnest(  ARRAY_REMOVE(STRING_TO_ARRAY('Hello World OpenAI', ' '), '') ) || '%' )
+//REPLACE(your_column, '\n', ' ')
+
+//SELECT to_tsvector('english', column1 || ' ' || column2 || ' ' || column3) AS concatenated_vector
 
 let x = {'sfield':'search_string', 'stype': 'tsfilter',  'column': '',
     'input': 'string or json',
@@ -51,19 +54,14 @@ let x = {'sfield':'search_string', 'stype': 'tsfilter',  'column': '',
     //default operator. can overwrite
     //websearch_to_tsquery
 
+    //for concatenation
+    "search_columns": []
+
     // to_tsquery('english', 'cat | dog')
 
     //tsvector: column of ts_vector to use
     //to_tsvector: concatenated list of columns
-    'operation': {
-        //tsrank_filter
-        //threshold
 
-        //function
-        //rank in select statement
-        //expression
-
-    }
     // plainto_tsquery('english', 'cat dog')
 
     // WHERE your_column LIKE ANY (array['%pattern1%', '%pattern2%', '%pattern3%']);
