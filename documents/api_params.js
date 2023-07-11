@@ -80,9 +80,12 @@ error: //route error. i.e. permission denied or some other global issue.
 let model = {
 
         'schema': "prod_schema",
-        'name': "table_name",
+        'table': "table_name",
+        'view': "view", //meant for select when inner joins are required. primarily meant for select. table name
+        //will be used when view is not available.
         'test_schema': "test_schema",
-        'test_name': "table_name",
+        'test_table': "table_name",
+        'test_view': "view_name",
         //if using test schema and test_name the columns are expected to match exactly
         'description': '',
 
@@ -473,7 +476,8 @@ let select_query = {
     search: [], //rank or text search. need to add search structure
     null: true ,//adds null to returned results. using for mapping and dropdown',
     "returning": [], //return list of fields //defaults to all columns
-    tid: null
+    tid: null,
+    //or: true
 
     //how to send file?
 }

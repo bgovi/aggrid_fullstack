@@ -80,6 +80,9 @@ bulma with pagination
 download modules
 */
 
+
+//on in operation replace space with newline
+
 //filter
 //pagination
 //order_by

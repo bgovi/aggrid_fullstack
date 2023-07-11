@@ -1,5 +1,3 @@
-let x = [
-
 //stype rank or filter
 //threshold
 //bool
@@ -17,37 +15,92 @@ let x = [
 //filter only
 
 
+//expects string
+
 //tsfilter
 //tsrank //add to filters
+//ilike
 
-{'sfield':'search_string', 'stype': 'tsfilter',  'column': '',
+//func_rank
 
+//func_filter
 
-
-input: 'string or json',
-
-//tsquery
-//tsvector
-
-//gin index
-
-//expression
+//func_filter_rank
 
 
+//ilike_or
+//ilike_and
+
+//like_or
+//like_and
+
+//for rank create ts_vector on columns as cross_join
+//column name is available in order by
+// like_any
+// ilike_any
+
+// select 'robin pattern batman' LIKE ANY (array['%pattern1%', '%pattern2%', '%pattern3%']);
+
+//select 1 WHERE 'world' ILIKE ANY ( SELECT '%' || unnest(  ARRAY_REMOVE(STRING_TO_ARRAY('Hello World OpenAI', ' '), '') ) || '%' )
+//select 1 WHERE 'world' ILIKE ANY ( SELECT '%' || unnest(  ARRAY_REMOVE(STRING_TO_ARRAY('Hello World OpenAI', ' '), '') ) || '%' )
+
+let x = {'sfield':'search_string', 'stype': 'tsfilter',  'column': '',
+    'input': 'string or json',
+    //phraseto_tsquery
+    //plainto_tsquery
+    //default operator. can overwrite
+    //websearch_to_tsquery
+
+    // to_tsquery('english', 'cat | dog')
+
+    //tsvector: column of ts_vector to use
+    //to_tsvector: concatenated list of columns
+    'operation': {
+        //tsrank_filter
+        //threshold
+
+        //function
+        //rank in select statement
+        //expression
+
+    }
+    // plainto_tsquery('english', 'cat dog')
+
+    // WHERE your_column LIKE ANY (array['%pattern1%', '%pattern2%', '%pattern3%']);
+
+}
+
+let y = {
+    'sfield':'search_string', 'stype': 'map',  'column': '',
+    'input': 'string or json',
+    //phraseto_tsquery
+    //plainto_tsquery
+    //default operator. can overwrite
+    //websearch_to_tsquery
 
 
-operation: {
+    //conditions on how to search. dynamic assembly
 
-    //tsrank_filter
-    //threshold
 
-    //function
+    // order chosen by precendence and existance in object
+    k:[
+        { 'key': '', 'input_type': '=' },
 
-    //expression
+        { 'key': ['', ''], "search_type": '', 'columns': '' } 
 
-},
 
-//rank in select statement
+    ]
+}
+
+
+// SELECT *
+// FROM your_table
+// WHERE your_column ILIKE '%word1%'
+//   AND your_column ILIKE '%word2%'
+//   AND your_column ILIKE '%word3%';
+
+
+
 
 //filter added as cross join
 // SELECT 
@@ -103,36 +156,12 @@ operation: {
 // compare_columns?
 // operator
 
-'description': '', 'allow_null': False, 'default_value': '', 'alias': '',
-'return': false,
 //operator: how to define tsquery and tsvector operation?
 //how to handle numerical operations?
 //now to handle null?
 
-/*
-function syntax args parameter is same as column structure in model
-'function': {
-    'schema': '',
-    'name': '',
-    'args': [
-        { 'field':  'name', 'required': true, 'default_value': ''}, //field used to inject user values
-        { 'column': 'name'},  //column used to add table columns in funciton call
-        { 'expression': 'name'} //add raw string as component. may require access to now() for example
-    ]
-},
-*/
-'function': {
-    'schema': '',
-    'name': '',
-    'args': [
-        { 'field':  'search_string', 'required': true},
-        { 'column':  'name'} 
-    ]
-},
-//this is a raw string that is injected into the query
-"expression": ""
-}
-]
+
+
 
 
 //LIKE
