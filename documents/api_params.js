@@ -110,6 +110,7 @@ let model = {
         },
 
         'rls': "", //boolean expression. wrapped into where statement.
+        //cast on rls for insert
         //string template for where statement allows quick rls for model
 
 
@@ -155,23 +156,51 @@ let model = {
             // vfield refrences column always alphaNumeric. no sql injection possible.
             {'vfield':'cfte', 'column': '',  'alias': '', 'type': 'boolean',
                 'description': '',
-                "expression": {
-                    "bind_type": false,
-                     "xyz": false
-                }
-
-
+                "expression": ""
             },
             //search string field. string comming from user, can add multiple columns as input
             //first input alwasy user string.
 
             //operator ignored search_filter number or rank search_filter: "", //string or object with quick filter type
             //rank added in select clause. used as where and order by. removed from final return query
-            {'sfield':'search_string', 'column': '',  'alias': '', 'type': 'boolean',
-                // true/false or threshold
 
+            //coalesce null as '' and add space
+            {'sfield':'search_string', 'stype': 'tsquery',  'column': '',  'alias': '', 'type': 'boolean',
+                //tsquery
+                //tsvector
+
+                //input cast as ts_query
+
+                //ts_vector cast?
+                //column concatenated
+
+
+                // setweight(to_tsvector(coalesce(title,'')), 'A')    ||
+                // setweight(to_tsvector(coalesce(keyword,'')), 'B')  ||
+                // setweight(to_tsvector(coalesce(abstract,'')), 'C') ||
+                // setweight(to_tsvector(coalesce(body,'')), 'D');
+
+                // SELECT title, ts_rank_cd(textsearch, query, 32 /* rank/(rank+1) */ ) AS rank
+                // FROM apod, to_tsquery('neutrino|(dark & matter)') query
+                // WHERE  query @@ textsearch
+                // ORDER BY rank DESC
+                // LIMIT 10;
+
+
+                // true/false or threshold
+                //json or string. 
                 //input type cast
                 //input keys with default for json
+
+                //search style?
+
+                //object is conditional where clause
+                
+                //if map
+
+                //multicolumn and if not null
+
+                //text search
 
                 //search_columns: []  //casted so string and concatenated with space?
                 //or string for specific_column ?
@@ -198,8 +227,6 @@ let model = {
                     ]
                 },
                 */
-
-
                 'function': {
                     'schema': '',
                     'name': '',
@@ -443,7 +470,7 @@ let select_query = {
     limit: '',
     offset: '',
 
-    search: {}, //rank or text search. need to add search structure
+    search: [], //rank or text search. need to add search structure
     null: true ,//adds null to returned results. using for mapping and dropdown',
     "returning": [], //return list of fields //defaults to all columns
     tid: null
