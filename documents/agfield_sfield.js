@@ -9,7 +9,8 @@ agfield
 
 
 /*
-sfield
+sfield return:
+    optional if query value is present.
 
 
 
@@ -44,8 +45,6 @@ sfield
 
 
 
-//for rank create ts_vector on columns as cross_join
-//column name is available in order by
 // like_any
 // ilike_any
 // tsfilter
@@ -59,8 +58,13 @@ sfield
 
 //add to select statemetn
 let x = {'sfield':'search_string', 'stype': 'tsfilter',  'column': '',
-    'input': 'string or json',
+    'query_cast': "",
+    'document_cast': "",
+    'output_type': 'bool', //or numeric
+
+    'return': true, //include in select statement?
     //return_value:?
+    //0 if no query value used.
 
     //query_type:
         //phraseto_tsquery
@@ -74,46 +78,62 @@ let x = {'sfield':'search_string', 'stype': 'tsfilter',  'column': '',
 
     //document_type:
 
-    //tsvector: column of ts_vector to use
-        //select 1 WHERE 'world' ILIKE ANY ( SELECT '%' || unnest(  ARRAY_REMOVE(STRING_TO_ARRAY('Hello World OpenAI', ' '), '') ) || '%' )
-        //select 1 WHERE 'world' ILIKE ANY ( SELECT '%' || unnest(  ARRAY_REMOVE(STRING_TO_ARRAY('Hello World OpenAI', ' '), '') ) || '%' )
-        //REPLACE(your_column, '\n', ' ')
+    //to_tsvector: concatenated list of columns
+    "document_columns": [],
+    "document_delimiter": "",
+    "document_expression": "", //for advanced search. i.e. concatenating values etc.
+    'document_cast': "",
+    'query_cast': "",
+    "query_delimiter": "",
+    "query_expression": "",
 
+
+    /*like_any or ilike_any structure
+        //'world' ILIKE ANY ( SELECT '%' || unnest(  ARRAY_REMOVE(STRING_TO_ARRAY('Hello World OpenAI', ' '), '') ) || '%' )
+        //CONCATENATE(column_1, ' ', column_2) ILIKE ANY ( SELECT '%' || unnest(  ARRAY_REMOVE(STRING_TO_ARRAY(query_string, ' '), '') ) || '%' )
+        // space can be replaced with document_delimiter or query_delimiter to change string concatenation types.
+    */
+
+    'query_name': "",
+    'document_name': "",
+    'tsvector': "", //name of precaulcated tsvector
+    'to_tsvector': []
+
+    /*
+        //to_tsquery 
+        plainto_tsquery('english', 'cat dog')
+
+        filter added as cross join
+        SELECT 
+            courses.id,
+            courses.title,
+            courses.description,
+            ts_rank(to_tsvector(courses.title), query) as rank_title,
+            ts_rank(to_tsvector(courses.description), query) as rank_description
+        FROM 
+            courses, 
+            to_tsvector(courses.title || courses.description) document_name,
+            to_tsquery('sales') query_name
+        WHERE query @@ document
+        ORDER BY rank_description, rank_title DESC
+
+    */
+
+    //rank_columns?
 
     // plainto_tsquery('english', 'cat dog')
-
-    // WHERE your_column LIKE ANY (array['%pattern1%', '%pattern2%', '%pattern3%']);
-
-    //to_tsvector: concatenated list of columns
-    "search_columns": [],
-    "delimiter": "",
-    "expression": "" //for advanced search. i.e. concatenating values etc.
 
 }
 
 
-// SELECT *
-// FROM your_table
-// WHERE your_column ILIKE '%word1%'
-//   AND your_column ILIKE '%word2%'
-//   AND your_column ILIKE '%word3%';
 
 
 
 
-//filter added as cross join
-// SELECT 
-//     courses.id,
-//     courses.title,
-//     courses.description,
-//     ts_rank(to_tsvector(courses.title), query) as rank_title,
-//     ts_rank(to_tsvector(courses.description), query) as rank_description
-// FROM 
-//     courses, 
-//     to_tsvector(courses.title || courses.description) document,
-//     to_tsquery('sales') query
-// WHERE query @@ document
-// ORDER BY rank_description, rank_title DESC
+
+
+
+
 
 //map
 
@@ -131,36 +151,6 @@ let x = {'sfield':'search_string', 'stype': 'tsfilter',  'column': '',
 // WHERE  query @@ textsearch
 // ORDER BY rank DESC
 // LIMIT 10;
-
-
-// true/false or threshold
-//json or string. 
-//input type cast
-//input keys with default for json
-
-//search style?
-
-//object is conditional where clause
-
-//if map
-
-//multicolumn and if not null
-
-//text search
-
-//search_columns: []  //casted so string and concatenated with space?
-//or string for specific_column ?
-//output_type filter type
-//enforce json
-// compare_columns?
-// operator
-
-//operator: how to define tsquery and tsvector operation?
-//how to handle numerical operations?
-//now to handle null?
-
-
-
 
 
 //LIKE

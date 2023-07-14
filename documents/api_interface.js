@@ -31,6 +31,7 @@ let select_query = {
 
     null: true ,//adds null to returned results. using for mapping and dropdown',
     "returning": [], //return list of fields //defaults to all columns
+    //excluding: [] ?
     tid: null,
     or: true, //defaults to false. joins filters using or statement. defaults to using and
     //by default all fields returned as string. in some cases maybe okay to set type during query
@@ -61,6 +62,7 @@ let modify_query = {
         "data":  {}, //{"field_1":"valx1", "field_2":"valy1"}
         "tid": null, //transaction id. used to keep track of input and output results.
         "returning": ['id', 'column_1', 'xxx'] //if missing all fields returned
+        //excluding: [] ?
 }
 
 //data modificaiton structure individual
