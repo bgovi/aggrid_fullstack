@@ -20,7 +20,7 @@ let select_query = {
     where: '', //[]
     // {'field': field_name, 'operator': 'not_in', 'value':  StringifyArray(value) }
     // {'field': field_name, 'operator': 'not_in', 'value':  [str(val_1), str(val_2)] }
-    // {'field': field_name, 'operator': 'tsvector', 'value':  "", ; 'threshold': numerical }
+    // {'field': field_name, 'operator': 'tsvector', 'value':  "", ; 'threshold': numerical, 'score': true }
     // delimiter? query_type, document_type
 
     //pagination limit and offset should be positive integers > 0
