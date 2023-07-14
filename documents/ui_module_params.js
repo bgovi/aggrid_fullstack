@@ -104,3 +104,5 @@ import modules
 //add repull options for dropdowns?
 
 //requires data field
+
+//split for aggregation?
