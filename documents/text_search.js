@@ -1,13 +1,9 @@
 /*
-Just return on default?
+Just return on default if set true or
 
 
 
 */
-
-
-
-//all user info available in query
 
 
 //stype rank or filter
@@ -55,6 +51,7 @@ Just return on default?
 //add to select statemetn
 let x = {'sfield':'search_string', 'stype': 'tsfilter',  'column': '',
     'input': 'string or json',
+    //return_value:?
 
     //query_type:
         //phraseto_tsquery

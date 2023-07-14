@@ -172,8 +172,19 @@ let model = {
         */
  
         'interface': [
-            // #primary key
-            //field column alias alias
+            /* 
+                field_types
+            field: bidirectional field. corresponds to real column. used for all crud operations.
+            agfield: server maintained field. server responsible for injecting data.
+                ag_type, expression.
+                all user info available in query inorder to track modificaitons. also allows implementation of
+                rls. on_select, on_insert, on_update, on_delete
+
+            sfield:
+            vfield: virtual/read_only field. used for select, filter and order by operations. generally used to 
+                append simple calculations to a real table. i.e. sum of values in a row. meant to avoid unnecessary
+                view creation in the database. if no expression is used, the column is assumed to already exist.
+            */
             { 'field': 'id',         'column': 'id',         'type': 'bigint',  'description': '',  'default_value': ''},
             { 'field': 'first_name', 'column': 'First Name', 'type': 'text',    'description': '',  'default_value': '',   },
 
@@ -269,6 +280,8 @@ let model = {
             include fields determine what to use.
         */
 
+        // #primary key
+        //field column alias alias
         'primary_key': '', //defaults to id or [ ] for composite
         'exclude_pk_insert': true, //default true. doesnt allow insert to pass for model based query
         'ignore_undefined': true,// for dynamic assembly only. default_value to filter in raw query.
