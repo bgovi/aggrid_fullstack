@@ -176,11 +176,14 @@ let model = {
                 field_types
             field: bidirectional field. corresponds to real column. used for all crud operations.
             agfield: server maintained field. server responsible for injecting data.
-                ag_type, expression.
-                all user info available in query inorder to track modificaitons. also allows implementation of
-                rls. on_select, on_insert, on_update, on_delete
-
-            sfield:
+                ag_type, expression. all user info available in query in order to track modificaitons.
+                Also allows implementation of rls. on_select, on_insert, on_update, on_delete, and
+                optional. This field can be bidirectional or read only. 
+                All data modifications would be injected by the server. Optional means if the field name
+                is in the user query the value is replaced by the server and injected into the mutation.
+            sfield: this is meant to provide an interface for full text based search. often consists of a query
+                string and a set of concatenated columns to compare it against. if specified as a rank field it
+                can also be returned. 
             vfield: virtual/read_only field. used for select, filter and order by operations. generally used to 
                 append simple calculations to a real table. i.e. sum of values in a row. meant to avoid unnecessary
                 view creation in the database. if no expression is used, the column is assumed to already exist.
@@ -189,7 +192,7 @@ let model = {
             { 'field': 'first_name', 'column': 'First Name', 'type': 'text',    'description': '',  'default_value': '',   },
 
             //if missing default reject
-            { 'field': 'value',                              'type': 'numeric', 'required': true   },
+            { 'field': 'value', 'type': 'numeric'   },
  
             //agfield
 
@@ -203,9 +206,11 @@ let model = {
             {'agfield': 'updated_at' , 'agtype': 'updated_at', 'column': 'updated_at'},
             {'agfield': 'created_at' , 'agtype': 'created_at', 'column': 'Creataed At'},
             {'agfield': 'deleted_at' , 'agtype': 'deleted_at'}, //expression
-            //or expression
+            {'agfield': 'user_check' , 'agtype': 'expression', 
+                //modification_rules
+                'expresssion': ''
 
-
+            },
             // virtual_columns and or calculated columns only select
             // vfield refrences column always alphaNumeric. no sql injection possible.
             {'vfield':'cfte', 'column': '',  'alias': '', 'type': 'boolean',
@@ -285,6 +290,13 @@ let model = {
         'primary_key': '', //defaults to id or [ ] for composite
         'exclude_pk_insert': true, //default true. doesnt allow insert to pass for model based query
         'ignore_undefined': true,// for dynamic assembly only. default_value to filter in raw query.
+
+        'required': {
+            'select': {},
+            'insert': {},
+            'update': {},
+            'delete': {}
+        }
 };
 
 /*

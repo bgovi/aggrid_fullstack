@@ -1,10 +1,19 @@
 /*
-Just return on default if set true or
+agfield
 
 
 
 */
 
+
+
+
+/*
+sfield
+
+
+
+*/
 
 //stype rank or filter
 //threshold
@@ -184,3 +193,51 @@ let x = {'sfield':'search_string', 'stype': 'tsfilter',  'column': '',
 //select 1 WHERE 'world' ILIKE ANY ( SELECT '%' || unnest(  ARRAY_REMOVE(STRING_TO_ARRAY('Hello World OpenAI', ' '), '') ) || '%' )
 //select 1 WHERE 'world' ILIKE ANY ( SELECT '%' || unnest(  ARRAY_REMOVE(STRING_TO_ARRAY('Hello World OpenAI', ' '), '') ) || '%' )
 //REPLACE(your_column, '\n', ' ')
+
+
+/*
+{'sfield':'search_string', 'stype': 'tsquery',  'column': '',  'alias': '', 'type': 'boolean',
+//tsquery
+//tsvector
+
+//input cast as ts_query
+
+//ts_vector cast?
+//column concatenated
+
+// SELECT title, ts_rank_cd(textsearch, query, 32  ) AS rank
+// FROM apod, to_tsquery('neutrino|(dark & matter)') query
+// WHERE  query @@ textsearch
+// ORDER BY rank DESC
+// LIMIT 10;
+
+
+// true/false or threshold
+//json or string. 
+//input type cast
+//input keys with default for json
+
+//search style?
+
+//object is conditional where clause
+
+//multicolumn and if not null
+
+//text search
+
+//search_columns: []  //casted so string and concatenated with space?
+//or string for specific_column ?
+//output_type filter type
+//enforce json
+// compare_columns?
+// operator
+
+'description': '', 'allow_null': False, 'default_value': '', 'alias': '',
+'return': false,
+//operator: how to define tsquery and tsvector operation?
+//how to handle numerical operations?
+//now to handle null?
+//this is a raw string that is injected into the query
+"expression": ""
+}
+*/
