@@ -81,8 +81,7 @@ error: //route error. i.e. permission denied or some other global issue.
 model: 
 
 
-
-
+error table for apis. sends query and data and user id?
 */
 
 

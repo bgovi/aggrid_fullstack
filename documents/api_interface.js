@@ -1,37 +1,49 @@
 /*
-Interacting with API as an end users
+Interacting with API as an end users. If in oauth land dont need token just run post request.
+
+actions: select, insert, update, delete, truncate
 
 
-
+curl -X POST -H 'Accept: application/json' -H "Authorization: Bearer ${TOKEN}"
+    https://api.{hostname}/api/namespace/name/action?=version
 */
 
 
-//data pull options:
-//for select route
 
-//allow array? has hard coded limit
+/*
+Arguments and payload structure for select route.
+*/
+
 let select_query = {
     order_by: '', // "order_by": ""  // [{'field_name': 'asc}, {'field_name': 'desc'}]
     where: '', //[]
-    // "where": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}]
+    // {'field': field_name, 'operator': 'not_in', 'value':  StringifyArray(value) }
+    // {'field': field_name, 'operator': 'not_in', 'value':  [str(val_1), str(val_2)] }
 
     //pagination limit and offset should be positive integers > 0
     limit: '',
     offset: '',
 
     search: [], //rank or text search. need to add search structure
+    // {'field': field_name, 'threshold': numerical, 'value':  StringifyArray(value) }
+    //threshold 1 for true and 0 for false. if purely numerical any number between 0 and 1
+
     null: true ,//adds null to returned results. using for mapping and dropdown',
     "returning": [], //return list of fields //defaults to all columns
     tid: null,
-    //or: true
-
-    //how to send file?
+    or: true, //defaults to false. joins filters using or statement.
+    //by default all fields returned as string. in some cases maybe okay to set type during query
+    //may have issues with dates and biginteger. 
+    type_cast: {'field': 'type'}
 }
 
+//individual statement structure
 let select_param = { select_query}
-
-//sends several select request. each request only allows for 1 value maximum to be returned
-//generally used to search or map several data points in a single request.
+/*
+    send several requests in one statement
+    sends several select request. each request only allows for 10 value maximum to be returned
+    generally used to search or map several data points in a single request.
+*/
 let select_params = [
     { select_query_1},
     { select_query_2},
@@ -40,14 +52,14 @@ let select_params = [
 ]
 
 
-
+/*
+For insert, update and delete payload structure
+*/
 
 let modify_query = {
-        "data":  {}, //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}] or object
+        "data":  {}, //{"field_1":"valx1", "field_2":"valy1"}
         "tid": null, //transaction id. used to keep track of input and output results.
-        "returning": ['id', 'column_1', 'xxx']
-        //tid for short
-        //defaults to id?
+        "returning": ['id', 'column_1', 'xxx'] //if missing all fields returned
 }
 
 //data modificaiton structure individual
@@ -64,18 +76,39 @@ let post_params = [
     //...
 ]
 
-//api return structure
+/*
+Return structure of select or mutation operations
+
+output: [
+
+]
+
+error:
+
+types: {}
+*/
+
+
 let return_object = {
  
     output: [
         {
-            data: [{}],
+            data: [{}], //returned data for each statement. modificaiton will ususally only return 1 record.
+            //select may return multiple rows.
             transaction_id: "",
-            error_msg: '',
-            count: ''
+            error: '', //error on individual crud operation. invalid query or data validation issue
+            count: '', //number of rows affected.
+            success: 'true' //boolean infor
         }
         //if batch each request has a separate object
     ],
-    error: (str),
+    error: (str), //route level error such as server error or permission denied
+    success: 'true', //boolean
     types: {} //column_name or alias as key. type as value
 }
+
+/*
+for truncate only requires route in post request with empty payload
+
+only return success true/false
+*/
