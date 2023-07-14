@@ -19,12 +19,12 @@ let select_query = {
     where: '', //[]
     // {'field': field_name, 'operator': 'not_in', 'value':  StringifyArray(value) }
     // {'field': field_name, 'operator': 'not_in', 'value':  [str(val_1), str(val_2)] }
+    // {'field': field_name, 'operator': 'tsvector', 'value':  "", ; 'threshold': numerical }
+
 
     //pagination limit and offset should be positive integers > 0
     limit: '',
     offset: '',
-
-    search: [], //rank or text search. need to add search structure
     // {'field': field_name, 'threshold': numerical, 'value':  StringifyArray(value) }
     //threshold 1 for true and 0 for false. if purely numerical any number between 0 and 1
 
