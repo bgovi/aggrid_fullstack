@@ -106,3 +106,4 @@ import modules
 //requires data field
 
 //split for aggregation?
+//Example: Aligned Grid as Footer
