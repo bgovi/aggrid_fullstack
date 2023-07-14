@@ -1,3 +1,6 @@
+//all user info available in query
+
+
 //stype rank or filter
 //threshold
 //bool
@@ -22,72 +25,53 @@
 //ilike
 
 //func_rank
-
 //func_filter
-
 //func_filter_rank
 
 
-//ilike_or
-//ilike_and
-
-//like_or
-//like_and
 
 //for rank create ts_vector on columns as cross_join
 //column name is available in order by
 // like_any
 // ilike_any
-
-// select 'robin pattern batman' LIKE ANY (array['%pattern1%', '%pattern2%', '%pattern3%']);
-
-//select 1 WHERE 'world' ILIKE ANY ( SELECT '%' || unnest(  ARRAY_REMOVE(STRING_TO_ARRAY('Hello World OpenAI', ' '), '') ) || '%' )
-//select 1 WHERE 'world' ILIKE ANY ( SELECT '%' || unnest(  ARRAY_REMOVE(STRING_TO_ARRAY('Hello World OpenAI', ' '), '') ) || '%' )
-//REPLACE(your_column, '\n', ' ')
+// tsfilter
+// tsrank
+// tsfilter_rank
+// e_rank
+// e_filter
+// e_filter_rank
 
 //SELECT to_tsvector('english', column1 || ' ' || column2 || ' ' || column3) AS concatenated_vector
 
 let x = {'sfield':'search_string', 'stype': 'tsfilter',  'column': '',
     'input': 'string or json',
-    //phraseto_tsquery
-    //plainto_tsquery
-    //default operator. can overwrite
-    //websearch_to_tsquery
 
-    //for concatenation
-    "search_columns": []
+    //query_type:
+        //phraseto_tsquery
+        //plainto_tsquery
+        //default operator. can overwrite
+        //websearch_to_tsquery
+        // to_tsquery('english', 'cat | dog'
 
-    // to_tsquery('english', 'cat | dog')
+
+                //search_columns: []  //casted so string and concatenated with space?
+
+    //document_type:
 
     //tsvector: column of ts_vector to use
-    //to_tsvector: concatenated list of columns
+        //select 1 WHERE 'world' ILIKE ANY ( SELECT '%' || unnest(  ARRAY_REMOVE(STRING_TO_ARRAY('Hello World OpenAI', ' '), '') ) || '%' )
+        //select 1 WHERE 'world' ILIKE ANY ( SELECT '%' || unnest(  ARRAY_REMOVE(STRING_TO_ARRAY('Hello World OpenAI', ' '), '') ) || '%' )
+        //REPLACE(your_column, '\n', ' ')
+
 
     // plainto_tsquery('english', 'cat dog')
 
     // WHERE your_column LIKE ANY (array['%pattern1%', '%pattern2%', '%pattern3%']);
 
-}
+    //to_tsvector: concatenated list of columns
+    "search_columns": [],
+    "search_expression": ""
 
-let y = {
-    'sfield':'search_string', 'stype': 'map',  'column': '',
-    'input': 'string or json',
-    //phraseto_tsquery
-    //plainto_tsquery
-    //default operator. can overwrite
-    //websearch_to_tsquery
-
-
-    //conditions on how to search. dynamic assembly
-
-
-    // order chosen by precendence and existance in object
-    k:[
-        { 'key': '', 'input_type': '=' },
-
-        { 'key': ['', ''], "search_type": '', 'columns': '' } 
-
-
-    ]
 }
 
 
@@ -186,3 +170,9 @@ let y = {
 
     CREATE INDEX courses_search_idx ON courses USING GIN (to_tsvector(courses.title || courses.description));
 */
+
+// select 'robin pattern batman' LIKE ANY (array['%pattern1%', '%pattern2%', '%pattern3%']);
+
+//select 1 WHERE 'world' ILIKE ANY ( SELECT '%' || unnest(  ARRAY_REMOVE(STRING_TO_ARRAY('Hello World OpenAI', ' '), '') ) || '%' )
+//select 1 WHERE 'world' ILIKE ANY ( SELECT '%' || unnest(  ARRAY_REMOVE(STRING_TO_ARRAY('Hello World OpenAI', ' '), '') ) || '%' )
+//REPLACE(your_column, '\n', ' ')

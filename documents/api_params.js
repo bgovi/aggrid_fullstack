@@ -77,6 +77,16 @@ error: //route error. i.e. permission denied or some other global issue.
 
 
 //use defaults at the sql level if possible
+/*
+model: 
+
+
+
+
+*/
+
+
+
 let model = {
 
         'schema': "prod_schema",
@@ -88,8 +98,12 @@ let model = {
         'test_view': "view_name",
         //if using test schema and test_name the columns are expected to match exactly
         'description': '',
-
         'bind_type': null, //replacement or bind
+        //routes_to_build
+        //deleted_at: true
+
+        //ignore_cast?
+
         /*
         if replacement :variable_name
         if bind: $variable_name
@@ -102,7 +116,6 @@ let model = {
         */
 
 
-        //deleted_at: true
         'upsert': {
             // "on_conflict": "", //string a-zA-Z0-9 name: //set_fields if missing or empty do_nothing
             //  set [] //column_names with escapes required?
@@ -112,25 +125,53 @@ let model = {
             //  upsert requires set or do nothing
         },
 
-        'rls': "", //boolean expression. wrapped into where statement.
-        //cast on rls for insert
-        //string template for where statement allows quick rls for model
+        /*
+        rls:
+            boolean expression. wrapped into where statement.
+            only can use user information. column condtion with user information
+            for insert data is checked in select into statement
+            for update data is checed in select and on column value in update where clause
+            for delete only checked in where statement
+            ignore on insert?
+            cast on rls for insert
+            string template for where statement allows quick rls for model
+        */
 
 
+        'rls': [
+            {   "policy_name": "",
+                "field_name": {
+                    //on_all: using and with_check
+                    //on_all
+                    //on_select, insert, update, delete?
+                    //expression: //boolean
+                }
+            },
+            //
+        ], 
+        
 
 
-        //error_meaning for constraints
+        /*
+            error_meaning for constraints
+
+        */
         error_constraint: {
             'sql_error_name': "message to append to is meaningful"
         },
 
 
-        //append null
-        //field is bydirectional for interface
-        //column is the actual column used in postgres or mysql for name mapping.
-        //alias will change them of return column select column as alias 
-        //vfield is for computed values for select and filters and order by only. not available as a modification parameter.
-        //sfield for text based search or rank. expects a string and 
+        /*
+
+            append null
+            field is bydirectional for interface
+            column is the actual column used in postgres or mysql for name mapping.
+            alias will change them of return column select column as alias 
+            vfield is for computed values for select and filters and order by only. not available as a modification parameter.
+            sfield for text based search or rank. expects a string and
+            agfield
+        */
+ 
         'interface': [
             // #primary key
             //field column alias alias
@@ -168,6 +209,7 @@ let model = {
             //rank added in select clause. used as where and order by. removed from final return query
 
             //coalesce null as '' and add space
+            //details in text_search.js
             {'sfield':'search_string', 'stype': 'tsquery',  'column': '',  'alias': '', 'type': 'boolean',
                 //tsquery
                 //tsvector
@@ -241,18 +283,11 @@ let model = {
                 //this is a raw string that is injected into the query
                 "expression": ""
             }
-        ]   
-        ,
+        ],
 
-        'max_rows': false, //number
         //50000
+        'max_rows': false, //number
 
-        'primary_key': '', //defaults to id or [ ] for composite
-        'exclude_pk_insert': true, //default true. doesnt allow insert to pass for model based query
-        'ignore_undefined': true,// for dynamic assembly only. default_value to filter in raw query.
-
-
-        //optional in specific route definitions to change default behavior
         /*
         primary_key for update/delete if other primary key is required
         'do_instead': null // for route use only. overwrites how route is dynamically generated.
@@ -264,6 +299,10 @@ let model = {
             include fields determine what to use.
         */
 
+
+        'primary_key': '', //defaults to id or [ ] for composite
+        'exclude_pk_insert': true, //default true. doesnt allow insert to pass for model based query
+        'ignore_undefined': true,// for dynamic assembly only. default_value to filter in raw query.
 };
 
 
@@ -271,103 +310,8 @@ let model = {
 // query: {
 //     'description': '',
 //     'interface': []
-//     'str: []
+//     'str':
 // }
-
-
-
-
-/*
-query assembly select
-
-
-Select cast (column_1 as text ) as alias_1,
-    cast (column_2 as text ) as alias_2
-    FROM (
-        --null option here with type cast to match types
-        --if null should be excluded remove flag.
-
-        UNION ALL
-
-        Select column_1, column_2, text_filter as text_filter from table
-        //coalesce null for text_filter
-        --filters
-    ) "a"
-    --text_filter here?
-    --order_by
-    --add order_by text filter here
-
---if null injection
-
-
-Select cast (column_1 as text ) as alias_1,
-    cast (column_2 as text ) as alias_2
-    FROM (
-        select null::column_1_type, null::column_2_type
-            UNION ALL
-        Select column_1, column_2,  from table
-        --filters
-    ) "a"
-    --text_filter here?
-    --order_by
-
-
-
-
-query assembly rls
-    INSERT INTO table2
-    SELECT * FROM table1
-    WHERE condition;
-
-    INSERT INTO table2 (column1, column2, column3, ...)
-    SELECT column1, column2, column3, ...
-    FROM table1
-    WHERE condition;
-
-// insert into LeadCustomer (Firstname, Surname, BillingAddress, email)
-// select 
-//     'John', 'Smith', 
-//     '6 Brewery close, Buxton, Norfolk', 'cmp.testing@example.com'
-// where not exists (
-//     select 1 from leadcustomer where firstname = 'John' and surname = 'Smith'
-//  SELECT * FROM (VALUES (1, 'one'), (2, 'two'), (3, 'three')) AS t (num,letter);
-
-
-//ts_ran and tas query?
-
-    select *
-    from (
-        SELECT
-            pictures.id,
-            ts_rank_cd(to_tsvector('english', pictures.title), 
-            to_tsquery('small dog')) AS score
-        FROM pictures
-        --filters go here--
-    ) s
-    WHERE score > 0
-    ORDER BY score DESC
-
-https://stackoverflow.com/questions/12933805/best-way-to-use-postgresql-full-text-search-ranking
-
-
-query assembly insert/update/delete
-
-
-
-appending nulls
-
-
-
-
-
-return type. everything casted to string. how to handle big int. big numbers
-and datetime.
-
-
-cast(column as text) as alias
-
-*/
-
 
 
 
@@ -398,10 +342,9 @@ actions: select/insert/update/delete/truncate
 let routes = {
 
     select: {
-        model: {
-
-
-        }
+        //instead
+        //function
+        //expression
 
 
         //crud_type for model use only
@@ -438,98 +381,11 @@ let routes = {
 
 let test_routes = {
  
-    select: {
-        //model
-        //use schema and name not test_schema and test_name
-
-    }, //function or model overwrite
+    select: {},
     insert: {}, 
     update: {},
     delete: {},
     // deleted_at: "update column"
     truncate: {} //true defaults to false
 
-}
-
-
-/*
-Interacting with API as an end users
-
-
-
-*/
-
-
-//data pull options:
-//for select route
-
-//allow array? has hard coded limit
-let select_query = {
-    order_by: '', // "order_by": ""  // [{'field_name': 'asc}, {'field_name': 'desc'}]
-    where: '', //[]
-    // "where": "", //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}]
-
-    //pagination limit and offset should be positive integers > 0
-    limit: '',
-    offset: '',
-
-    search: [], //rank or text search. need to add search structure
-    null: true ,//adds null to returned results. using for mapping and dropdown',
-    "returning": [], //return list of fields //defaults to all columns
-    tid: null,
-    //or: true
-
-    //how to send file?
-}
-
-let select_param = { select_query}
-
-//sends several select request. each request only allows for 1 value maximum to be returned
-//generally used to search or map several data points in a single request.
-let select_params = [
-    { select_query_1},
-    { select_query_2},
-    { select_query_3}
-    //...
-]
-
-
-
-
-let modify_query = {
-        "data":  {}, //array of objects: [{x:"valx1", y:"valy1"},{x:"valx2", y:"valy2"}] or object
-        "tid": null, //transaction id. used to keep track of input and output results.
-        "returning": ['id', 'column_1', 'xxx']
-        //tid for short
-        //defaults to id?
-}
-
-//data modificaiton structure individual
-let post_param_ = {
-    modify_query
-}
-
-let post_params = [
-    // Array of objects. Contains information for crud operations.
-    // Operation order is not preserved.
-    modify_query_1,
-    modify_query_2,
-    modify_query_3
-    //...
-]
-
-//api return structure
-let return_object = {
- 
-    output: [
-        {
-            data: [{}],
-            transaction_id: "",
-            error_msg: '',
-            count: ''
-        }
-        //if batch each request has a separate object
-    ],
-    error: (str),
-    types: {} //column_name or alias as key. type as value
 }
