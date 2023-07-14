@@ -1,5 +1,6 @@
 /*
-Interacting with API as an end users. If in oauth land dont need token just run post request.
+Interacting with API as an end users. If using oauth dont need token just run post request.
+in https://{hostname}/api/namespace/name/action?=version
 
 actions: select, insert, update, delete, truncate
 
@@ -20,7 +21,7 @@ let select_query = {
     // {'field': field_name, 'operator': 'not_in', 'value':  StringifyArray(value) }
     // {'field': field_name, 'operator': 'not_in', 'value':  [str(val_1), str(val_2)] }
     // {'field': field_name, 'operator': 'tsvector', 'value':  "", ; 'threshold': numerical }
-
+    // delimiter? query_type, document_type
 
     //pagination limit and offset should be positive integers > 0
     limit: '',
@@ -31,7 +32,7 @@ let select_query = {
     null: true ,//adds null to returned results. using for mapping and dropdown',
     "returning": [], //return list of fields //defaults to all columns
     tid: null,
-    or: true, //defaults to false. joins filters using or statement.
+    or: true, //defaults to false. joins filters using or statement. defaults to using and
     //by default all fields returned as string. in some cases maybe okay to set type during query
     //may have issues with dates and biginteger. 
     type_cast: {'field': 'type'}
