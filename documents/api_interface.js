@@ -38,6 +38,34 @@ let select_query = {
     //may have issues with dates and biginteger. 
     type_cast: {'field': 'type'}
 }
+/*
+filter operators
+
+OPERATORS: 
+
+=	Equal
+>	Greater than
+<	Less than
+>=	Greater than or equal
+<=	Less than or equal
+<> or !=	Not equal
+AND	Logical operator AND
+OR	Logical operator OR
+IN	Return true if a value matches any value in a list
+BETWEEN	Return true if a value is between a range of values
+NOT BETWEEN 
+LIKE	Return true if a value matches a pattern
+IS NULL	Return true if a value is NULL
+NOT	Negate the result of other operators
+
+a BETWEEN x AND y
+a NOT BETWEEN x AND y
+BETWEEN SYMMETRIC (does automatic swap)
+
+
+*/
+
+
 
 //individual statement structure
 let select_param = { select_query}
