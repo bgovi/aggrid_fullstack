@@ -218,12 +218,6 @@ let model = {
                 //ts_vector cast?
                 //column concatenated
 
-
-                // setweight(to_tsvector(coalesce(title,'')), 'A')    ||
-                // setweight(to_tsvector(coalesce(keyword,'')), 'B')  ||
-                // setweight(to_tsvector(coalesce(abstract,'')), 'C') ||
-                // setweight(to_tsvector(coalesce(body,'')), 'D');
-
                 // SELECT title, ts_rank_cd(textsearch, query, 32 /* rank/(rank+1) */ ) AS rank
                 // FROM apod, to_tsquery('neutrino|(dark & matter)') query
                 // WHERE  query @@ textsearch
@@ -239,8 +233,6 @@ let model = {
                 //search style?
 
                 //object is conditional where clause
-                
-                //if map
 
                 //multicolumn and if not null
 
@@ -258,27 +250,6 @@ let model = {
                 //operator: how to define tsquery and tsvector operation?
                 //how to handle numerical operations?
                 //now to handle null?
-
-                /*
-                function syntax args parameter is same as column structure in model
-                'function': {
-                    'schema': '',
-                    'name': '',
-                    'args': [
-                        { 'field':  'name', 'required': true, 'default_value': ''}, //field used to inject user values
-                        { 'column': 'name'},  //column used to add table columns in funciton call
-                        { 'expression': 'name'} //add raw string as component. may require access to now() for example
-                    ]
-                },
-                */
-                'function': {
-                    'schema': '',
-                    'name': '',
-                    'args': [
-                        { 'field':  'search_string', 'required': true},
-                        { 'column':  'name'} 
-                    ]
-                },
                 //this is a raw string that is injected into the query
                 "expression": ""
             }
@@ -298,25 +269,39 @@ let model = {
             include fields determine what to use.
         */
 
-
         'primary_key': '', //defaults to id or [ ] for composite
         'exclude_pk_insert': true, //default true. doesnt allow insert to pass for model based query
         'ignore_undefined': true,// for dynamic assembly only. default_value to filter in raw query.
 };
 
+/*
+function syntax args parameter is same as column structure in model
+'function': {
+    'schema': '',
+    'name': '',
+    'args': [
+        { 'field':  'name', 'required': true, 'default_value': ''}, //field used to inject user values
+        { 'column': 'name'},  //column used to add table columns in funciton call
+        { 'expression': 'name'} //add raw string as component. may require access to now() for example
+    ]
+},
+*/
 
-
-// query: {
-//     'description': '',
-//     'interface': []
-//     'str':
-// }
-
-
-
-
-
-
+//for single route. i.e. select/insert/update/delete
+let model_function = {
+    'schema': "prod_schema",
+    'function': "function_name",
+    'test_schema': "test_schema",
+    'test_function': "function_name",
+    'action': '', //select, insert, update, delete
+    'description': '',
+    'args': [
+        {'agfield': 'user_id', 'agtype': 'user_id'},
+        { 'field':  'name', 'required': true, 'default_value': ''}, //field used to inject user values
+        { 'column': 'name'},  //column used to add table columns in funciton call
+        { 'expression': 'name'} //add raw string as component. may require access to now() for example
+    ]
+}
 
 
 //routes
@@ -338,16 +323,34 @@ actions: select/insert/update/delete/truncate
 //specify crud_type for overwrite.
 //hard code query for full dynamic expression.
 //routes route_name: /namespace/name/action
+
+
+// 'function': {
+//     'schema': '',
+//     'name': '',
+//     'args': [
+//         { 'field':  'search_string', 'required': true},
+//         { 'column':  'name'} 
+//     ]
+// }
+
+// raw_query is written
+// query: {
+//     'description': '',
+//     'interface': []
+//     'str':
+// }
+
+
 let routes = {
 
     select: {
         //instead
         //function
-        //expression
+        //query
 
 
-        //crud_type for model use only
-
+        //crud_type for model use onl
         //func or model replacement
         //instead: insert//upsert
         //upsert: {}
@@ -359,16 +362,17 @@ let routes = {
     insert: {
             //optional 
             //do_instead: ''
+            //upsert: {}
+            //primary_key
+            //will ignore model id. can update any primary keys.
+            //here just used for using better name for update
     },
-    //upsert: {} 
     update: {},
     delete: {
             //optional 
             //do_instead: ''
-
-
+            //deleted_at: "update column"
     },
-    // deleted_at: "update column"
     truncate: {} //boolean //true defaults to false
 }
 

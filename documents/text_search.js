@@ -1,3 +1,12 @@
+/*
+Just return on default?
+
+
+
+*/
+
+
+
 //all user info available in query
 
 
@@ -43,6 +52,7 @@
 
 //SELECT to_tsvector('english', column1 || ' ' || column2 || ' ' || column3) AS concatenated_vector
 
+//add to select statemetn
 let x = {'sfield':'search_string', 'stype': 'tsfilter',  'column': '',
     'input': 'string or json',
 
@@ -70,7 +80,8 @@ let x = {'sfield':'search_string', 'stype': 'tsfilter',  'column': '',
 
     //to_tsvector: concatenated list of columns
     "search_columns": [],
-    "search_expression": ""
+    "delimiter": "",
+    "expression": "" //for advanced search. i.e. concatenating values etc.
 
 }
 
