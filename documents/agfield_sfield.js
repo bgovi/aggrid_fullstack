@@ -15,17 +15,14 @@ sfield return:
 
 //add to select statemetn
 let xfilter = {'sfield':'search_string', 'stype': 'tsfilter',  'column': '',
-    'query_cast': "",
-    'document_cast': "",
     'output_type': 'bool', //or numeric
-
+    'default': '', //always injected into select statement
+    //if filter return false as defaults, else 0?
     'return': true, //include in select statement? hidden by default
 
-    //enforce query? empty_string
-    //return_value:?
-    //0 or false
+    //defaults to '' if not in use.
 
-    //query_type:
+    //query_type: for tsfilter or tsrank
         //phraseto_tsquery
         //plainto_tsquery
         //default operator. can overwrite
@@ -67,8 +64,8 @@ let xfilter = {'sfield':'search_string', 'stype': 'tsfilter',  'column': '',
         //if all any field null concat returns null
     */
 
-    'query_name': "",
-    'document_name': "",
+    'query_name': "", //defaults ? search_string_query
+    'document_name': "", //defaults ? search_string_document
     'tsvector': "", //name of precaulcated tsvector //ts_vector cast?
     'to_tsvector': []
 
@@ -98,6 +95,12 @@ let xfilter = {'sfield':'search_string', 'stype': 'tsfilter',  'column': '',
 }
 
 let xrank = {
+    //depends on filter query.
+
+    //to ignore filter and only use rank set threshold to null in depedant filter.
+    //than use rank to filter or order_by based on threshold
+    //requires listing depdencancy.
+
     //this appears in xyz.
 
     //requires variable if not in payload replace with default
@@ -122,7 +125,12 @@ let xrank = {
 
     // SELECT title, ts_rank_cd(textsearch, query, 32  ) AS rank
     // FROM apod, to_tsquery('neutrino|(dark & matter)') query
+}
 
+let xfilter_rank = {
+    //does both.
+    //accessible as a value
+    //if not sent rank set query defaults to ''
 }
 
 /*

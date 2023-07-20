@@ -21,18 +21,6 @@ let config = {
     }
 }
 
-// let config = {
-//     'ui': 'aggrid', //aggrid download import survey
-//     'namespace': 'xyz',
-//     'name': 'xyz',
-//     'id': '1', //for update/delete ?
-//     'test': false, //for testing
-//     'config': {
-
-//     }
-// }
-
-// add drop down repull
 
 
 //add permissions link table to api
