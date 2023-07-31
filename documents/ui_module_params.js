@@ -13,6 +13,7 @@ let config = {
     'name': 'xyz',
     'id': '1', //for update/delete ?
     'component': '', // survey, grid, download, upload, notes as markdown
+    'description': '',
 
     //read only. crud operations displayed on screen
     'test': false, //for testing uses test routes
@@ -21,6 +22,7 @@ let config = {
     }
 }
 
+//requires links to api
 
 
 //add permissions link table to api

@@ -72,6 +72,17 @@ types: //type information for column. everything is returned as a string
 output: // output structure
 error: //route error. i.e. permission denied or some other global issue.
 
+
+api_table
+id:
+description:
+test: false, //for testing uses test routes
+config: {
+    model:  {}
+    routes: {}
+    test_routes: {}
+}
+
 */
 
 

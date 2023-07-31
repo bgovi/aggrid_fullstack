@@ -7,6 +7,7 @@ actions: select, insert, update, delete, truncate
 
 curl -X POST -H 'Accept: application/json' -H "Authorization: Bearer ${TOKEN}"
     https://api.{hostname}/api/namespace/name/action?=version
+
 */
 
 
@@ -35,8 +36,9 @@ let select_query = {
     tid: null,
     or: true, //defaults to false. joins filters using or statement. defaults to using and
     //by default all fields returned as string. in some cases maybe okay to set type during query
-    //may have issues with dates and biginteger. 
-    type_cast: {'field': 'type'}
+    //may have issues with dates and biginteger.
+
+    //text or json
 }
 /*
 filter operators

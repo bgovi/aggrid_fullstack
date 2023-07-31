@@ -9,6 +9,7 @@ Links to
 id
 namespce
 name
+description
 config: {
     //for display
 }
