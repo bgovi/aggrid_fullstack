@@ -1,6 +1,15 @@
 /*
+sfield: for text based search against multiple fields. This can be a filter only, rank, or filter and rank.
+filters are not available in the select statements or order by. rank is. and can be filtered separately based
+on a threshold value. value: stores the string to send. 
+
+
+ilike or like as text search is just injected into the where string.
+
 sfield return:
     optional if query value is present.
+
+filter_rank does on rank option
 
 
 
@@ -33,9 +42,11 @@ let xfilter = {'sfield':'search_string', 'stype': 'tsfilter',  'column': '',
                 //search_columns: []  //casted so string and concatenated with space?
 
     //document_type:
-
+    // in where clause
     // like_any
     // ilike_any
+
+    // in cross join
     // tsfilter
     // tsrank
     // tsfilter_rank
@@ -95,6 +106,13 @@ let xfilter = {'sfield':'search_string', 'stype': 'tsfilter',  'column': '',
 }
 
 let xrank = {
+    'sfield':'search_string', 'stype': 'tsrank',  'column': '',
+    'output_type': 'bool', //or numeric
+    'default': '1', //always injected into select statement
+    //if filter return false as defaults, else 0?
+    'return': true, //include in select statement? hidden by default
+
+
     //depends on filter query.
 
     //to ignore filter and only use rank set threshold to null in depedant filter.
@@ -128,13 +146,26 @@ let xrank = {
 }
 
 let xfilter_rank = {
+    'sfield':'search_string', 'stype': 'tsfilter_rank',  'column': '',
+    'output_type': 'bool', //or numeric
+    'default': '1', //always injected into select statement
+    //if filter return false as defaults, else 0?
+    'return': true, //include in select statement? hidden by default
+
+    //cross join filter and rank calculation.
+
     //does both.
     //accessible as a value
     //if not sent rank set query defaults to ''
 }
 
 /*
-agfield key words come from the users table.
+agfield key words come from the users table. agfields are generally bidierectional.
+selects are preformed on the column_name. For inserts, updates or other data modifications
+the server injects values. either as an sql expression or the value stored in the agfield used.
+the fields will always be injects unless otherwise specified by using on_update, on_delete, on_insert.
+on_input means the key:value pair must be present in the payload. the value is ignored so can be set as null.
+This is to allow for optional injection of server side values.
 
 id
 oauth_id
@@ -149,6 +180,8 @@ ag_first_name
 ag_updated_at
 ag_created_at
 ag_deleted_at
+expression for input or update,
+
 
 */
 
@@ -161,6 +194,6 @@ ag_deleted_at
 // {'agfield': 'created_at' , 'agtype': 'created_at', 'column': 'Creataed At'},
 // {'agfield': 'deleted_at' , 'agtype': 'deleted_at'}, //expression
 // {'agfield': 'user_check' , 'agtype': 'expression', 
-//     //modification_rules
+//     //modification_rules on_insert, on_update, on_delete, on_input
 //     'expresssion': ''
 // }
