@@ -29,7 +29,9 @@ columns = [
     #primary key
     {'column': 'id',             'type': 'bigint', 'description': '', 'allow_null': False, 'default_value': ''  },
     {'column': 'namespace',      'type': 'text', 'description': '', 'allow_null': False, 'default_value': ''  },
-    {'column': 'title',          'type': 'text', 'description': '', 'allow_null': False, 'default_value': ''  },
+    {'column': 'name',          'type': 'text', 'description': '', 'allow_null': False, 'default_value': ''  },
+    {'column': 'version',          'type': 'text', 'description': '', 'allow_null': False, 'default_value': ''  },    
+
     {'column': 'description',    'type': 'text', 'description': '', 'allow_null': False, 'default_value': ''  },
     {'column': 'type',           'type': 'json', 'description': '', 'allow_null': False, 'default_value': ''  },
     {'column': 'config',         'type': 'json', 'description': '', 'allow_null': False, 'default_value': ''  },

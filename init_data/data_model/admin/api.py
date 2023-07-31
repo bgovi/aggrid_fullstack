@@ -41,7 +41,8 @@ columns = [
     #primary key
     {'column': 'id',             'type': 'bigint', 'description': '', 'allow_null': False, 'default_value': ''  },
     {'column': 'namespace',      'type': 'bigint', 'description': '', 'allow_null': False, 'default_value': ''  },
-    {'column': 'title',          'type': 'bigint', 'description': '', 'allow_null': False, 'default_value': ''  },
+    {'column': 'name',           'type': 'bigint', 'description': '', 'allow_null': False, 'default_value': ''  },
+    {'column': 'version',        'type': 'bigint', 'description': '', 'allow_null': False, 'default_value': ''  },
     {'column': 'description',    'type': 'bigint', 'description': '', 'allow_null': False, 'default_value': ''  },
     {'column': 'config',         'type': 'bigint', 'description': '', 'allow_null': False, 'default_value': ''  },
     {'column': 'created_at',     'type': 'boolean', 'description': '', 'allow_null': False, 'default_value': ''  },
