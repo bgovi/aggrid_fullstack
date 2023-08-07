@@ -61,8 +61,22 @@ class sql_generator {
                 SELECT * FROM schema.table
                 WHERE (rls )
             )
+
+            SELECT  column1
+            FROM  table_1
+            WHERE 
+                EXISTS( SELECT 
+                            1 
+                        FROM 
+                            table_2 
+                        WHERE 
+                            column_2 = table_1.column_1);
         */
     }
+    ts_query_cross_join () {
+        //add a default if undefined.
+    }
+
     field_to_column () {
 
     }
@@ -78,10 +92,10 @@ class sql_generator {
 
     //rls
     //subquery
-
-
 }
 
+
+//api_error table
 
 //select
 
@@ -107,3 +121,5 @@ class sql_generator {
 //text_cast alias
 
 //function xyz
+
+//return function

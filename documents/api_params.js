@@ -148,12 +148,22 @@ let model = {
         */
 
 
-        //filter syntax. allows subquery.
+        //filter syntax. allows subquery. exists
+
+        //using add to values to check if allowed
+        //on_check in the where clause
+
         'rls':  
             {
                 //on_all: using and with_check
                 //on_all
                 //on_select, insert, update, delete?
+                //add table name to column comparision in where clause
+                //i.e. table1.column1 = :field
+                //either filter or exists
+                //column in subquery
+                //column not in subquery
+                //value and type?
             }
         //
         , 
@@ -300,6 +310,7 @@ let model = {
         'exclude_pk_insert': true, //default true. doesnt allow insert to pass for model based query
         'ignore_undefined': true,// for dynamic assembly only. default_value to filter in raw query.
 
+        //instead? use function etc..
         'required': {
             'select': {},
             'insert': {},
@@ -315,7 +326,7 @@ let model = {
             'args': [
                 { 'field':  'name', 'required': true, 'default_value': ''}, //field used to inject user values
                 { 'column': 'name'},  //column used to add table columns in funciton call
-                { 'expression': 'name'} //add raw string as component. may require access to now() for example
+                { 'expression': ''} //add raw string as component. may require access to now() for example
             ]
         },
         */
@@ -355,9 +366,10 @@ let routes = {
         //     'description': '',
         //     'interface': []
         //     'str':
+        //      bind: ''
         // }
-        
-    }, //function or model overwrite
+        // allow additions of filters.
+    }, //  function or model overwrite
 
 
     insert: {
@@ -380,7 +392,6 @@ let test_routes = {
     insert: {}, 
     update: {},
     delete: {},
-    // deleted_at: "update column"
     truncate: {} //true defaults to false
 
 }
