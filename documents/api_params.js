@@ -148,17 +148,15 @@ let model = {
         */
 
 
-        'rls': [
-            {   "policy_name": "",
-                "field_name": {
-                    //on_all: using and with_check
-                    //on_all
-                    //on_select, insert, update, delete?
-                    //expression: //boolean
-                }
-            },
-            //
-        ], 
+        //filter syntax. allows subquery.
+        'rls':  
+            {
+                //on_all: using and with_check
+                //on_all
+                //on_select, insert, update, delete?
+            }
+        //
+        , 
         
 
 
@@ -308,36 +306,21 @@ let model = {
             'update': {},
             'delete': {}
         }
+
+        /*
+        function syntax args parameter is same as column structure in model
+        'function': {
+            'schema': '',
+            'name': '',
+            'args': [
+                { 'field':  'name', 'required': true, 'default_value': ''}, //field used to inject user values
+                { 'column': 'name'},  //column used to add table columns in funciton call
+                { 'expression': 'name'} //add raw string as component. may require access to now() for example
+            ]
+        },
+        */
 };
 
-/*
-function syntax args parameter is same as column structure in model
-'function': {
-    'schema': '',
-    'name': '',
-    'args': [
-        { 'field':  'name', 'required': true, 'default_value': ''}, //field used to inject user values
-        { 'column': 'name'},  //column used to add table columns in funciton call
-        { 'expression': 'name'} //add raw string as component. may require access to now() for example
-    ]
-},
-*/
-
-//for single route. i.e. select/insert/update/delete
-let model_function = {
-    'schema': "prod_schema",
-    'function': "function_name",
-    'test_schema': "test_schema",
-    'test_function': "function_name",
-    'action': '', //select, insert, update, delete
-    'description': '',
-    'args': [
-        {'agfield': 'user_id', 'agtype': 'user_id'},
-        { 'field':  'name', 'required': true, 'default_value': ''}, //field used to inject user values
-        { 'column': 'name'},  //column used to add table columns in funciton call
-        { 'expression': 'name'} //add raw string as component. may require access to now() for example
-    ]
-}
 
 
 //routes
@@ -361,54 +344,27 @@ actions: select/insert/update/delete/truncate
 //routes route_name: /namespace/name/action
 
 
-// 'function': {
-//     'schema': '',
-//     'name': '',
-//     'args': [
-//         { 'field':  'search_string', 'required': true},
-//         { 'column':  'name'} 
-//     ]
-// }
 
-// raw_query is written
-// query: {
-//     'description': '',
-//     'interface': []
-//     'str':
-// }
 
 
 let routes = {
 
     select: {
-        //instead
-        //function
-        //query
-
-
-        //crud_type for model use onl
-        //func or model replacement
-        //instead: insert//upsert
-        //upsert: {}
-        //query //template and interface
+        // raw_query is written
+        // query: {
+        //     'description': '',
+        //     'interface': []
+        //     'str':
+        // }
         
     }, //function or model overwrite
 
 
     insert: {
-            //optional 
-            //do_instead: ''
-            //upsert: {}
-            //primary_key
-            //will ignore model id. can update any primary keys.
-            //here just used for using better name for update
+
     },
     update: {},
-    delete: {
-            //optional 
-            //do_instead: ''
-            //deleted_at: "update column"
-    },
+    delete: {},
     truncate: {} //boolean //true defaults to false
 }
 
