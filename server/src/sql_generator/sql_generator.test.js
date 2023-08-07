@@ -3,6 +3,10 @@ default model
 */
 
 //for single route. i.e. select/insert/update/delete
+let user_token = {
+
+}
+
 let model_function = {
     'schema': "prod_schema",
     'function': "function_name",
@@ -17,3 +21,6 @@ let model_function = {
         { 'expression': 'name'} //add raw string as component. may require access to now() for example
     ]
 }
+
+//payload types.
+//text filter and xyz

@@ -6,9 +6,9 @@ This modules is used to create the sql string to be ran
 
 
 // subfield generator
-
+// engine i.e. postgres, mysql, .. etc
 class sql_generator {
-    constructor(agfields, route, model_config, payload, is_test ) {
+    constructor(sql_engine, agfields, route, model_config, payload, is_test ) {
 
     }
 
