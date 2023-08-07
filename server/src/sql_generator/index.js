@@ -8,7 +8,7 @@ This modules is used to create the sql string to be ran
 // subfield generator
 // engine i.e. postgres, mysql, .. etc
 class sql_generator {
-    constructor(sql_engine, agfields, route, model_config, payload, is_test ) {
+    constructor(sql_engine, agfields, route_type, model_config, payload, is_test ) {
 
     }
 
@@ -20,6 +20,12 @@ class sql_generator {
     //map field to alias for final return type
     //select column as Alias
     //text_cast alias
+
+    type_cast () {
+        //everything is sent as string by default. can overwrite.
+        //data is casted into correct type on data modification.
+        //engine type
+    }
 
     create_function () {
 
@@ -38,7 +44,7 @@ class sql_generator {
     raw_select () {
         //wrap so filters and order by can be used
         //i.e. select * FROM ( select function_x(:field_1) ) x
-        //     where statements 
+        //where statements 
     }
 
 
@@ -110,6 +116,10 @@ class sql_generator {
     field_to_alias () {
 
     }
+    field_to_column_as_alias () {
+
+    }
+
 
     //insert into from
     //update from
@@ -126,5 +136,17 @@ class sql_generator {
     //subquery
 }
 
+//concat model syntax with crud statement and payload
+//if 1 value returned success if 0 then error
 
 //api_error table
+
+/*
+    pagination sql server
+
+    SELECT employee_id, first_name, last_name
+    FROM employees
+    ORDER BY employee_id
+    OFFSET 10 ROWS
+    FETCH NEXT 10 ROWS ONLY;
+*/
