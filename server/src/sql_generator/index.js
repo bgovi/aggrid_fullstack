@@ -77,9 +77,7 @@ class sql_generator {
     update_rls () {
         /*
             INSERT INTO schema.table (x,y) FROM
-            (   SELECT type_cast as column, .. FROM 
-                    VALUES (:bind, :bind) 
-                
+            (   SELECT (:bind)::text as column
                 
             ) x (x,Y) WHERE (rls)
         */
@@ -117,7 +115,20 @@ class sql_generator {
 
     }
     field_to_column_as_alias () {
+        //for returning or select
 
+    }
+
+    function_call () {
+        
+    }
+
+    returning () {
+        /*
+            DELETE FROM table_name
+            WHERE condition
+            RETURNING column1, column2, ...;
+        */
     }
 
 

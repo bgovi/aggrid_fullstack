@@ -20,6 +20,10 @@ class rls_policy {
     //on_update
         //using add to values to check if allowed
         //on_check in the where clause
+    select() {
+        
+    }
+
 
     insert() {
         /*
@@ -30,6 +34,10 @@ class rls_policy {
                 where rls
         */
     }
+    upsert () {
+
+    }
+
     update() {
         /*
             UPDATE target_table
@@ -46,13 +54,16 @@ class rls_policy {
     }
     delete() {
         /*
-            DELETE FROM table_name WHERE id = :id AND (rls_using);        
+            DELETE FROM table_name WHERE id = :id AND (rls_using) 
         */
+        //set where condition
     }
     delete_at() {
         /*
             UPDATE table_name SET deleted_at = now() WHERE id = :id AND (rls_using);        
         */
+        //set fields
+        //where condition
     }
 
 
