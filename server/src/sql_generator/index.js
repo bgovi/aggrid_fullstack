@@ -15,12 +15,38 @@ class sql_generator {
     create_sql () {
 
     }
+
+    //map field to column
+    //map field to alias for final return type
+    //select column as Alias
+    //text_cast alias
+
     create_function () {
 
     }
+    parse_model () {
+
+    }
+
+    parse_route () {
+
+    }
+
     raw_query () {
 
-    } 
+    }
+    raw_select () {
+        //wrap so filters and order by can be used
+        //i.e. select * FROM ( select function_x(:field_1) ) x
+        //     where statements 
+    }
+
+
+    prepend_null () {
+        /*
+            For select query prepends with null. Used as first row.
+        */
+    }
 
     //bind or replace
 
@@ -89,6 +115,12 @@ class sql_generator {
     //update from
     //delete from
 
+    //select
+    //insert
+    //update
+    //delete
+    //truncate
+
 
     //rls
     //subquery
@@ -96,30 +128,3 @@ class sql_generator {
 
 
 //api_error table
-
-//select
-
-
-//insert
-
-
-//update
-
-
-//delete
-
-
-//truncate
-
-//save
-
-
-//map field to column
-
-//map field to alias
-
-//text_cast alias
-
-//function xyz
-
-//return function

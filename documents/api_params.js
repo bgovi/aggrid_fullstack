@@ -112,8 +112,6 @@ let model = {
         //routes_to_build
         //deleted_at: true
 
-        //ignore_cast?
-
         /*
         if replacement :variable_name
         if bind: $variable_name
@@ -128,11 +126,8 @@ let model = {
 
         'upsert': {
             // "on_conflict": "", //string a-zA-Z0-9 name: //set_fields if missing or empty do_nothing
-            //  set [] //column_names with escapes required?
-            //  not_set columns?
+            //  set [] //column_names with escapes required? if empty or null do_nothing
             // "on_constraint": "", //string a-zA-Z0-9 name: //set_fields or do_nothing 
-            // "do_nothing"
-            //  upsert requires set or do nothing
         },
 
         /*
@@ -164,6 +159,15 @@ let model = {
                 //column in subquery
                 //column not in subquery
                 //value and type?
+                "using": {
+                    //select, update, delete
+
+                },
+                "with_check": {
+                    //insert or update
+
+
+                }
             }
         //
         , 
@@ -181,7 +185,7 @@ let model = {
 
         /*
 
-            append null
+            append null need correct types. does a union on raw query
             field is bydirectional for interface
             column is the actual column used in postgres or mysql for name mapping.
             alias will change them of return column select column as alias 
@@ -309,9 +313,12 @@ let model = {
         'primary_key': '', //defaults to id or [ ] for composite
         'exclude_pk_insert': true, //default true. doesnt allow insert to pass for model based query
         'ignore_undefined': true,// for dynamic assembly only. default_value to filter in raw query.
+        //if rls just dont use column name in insert
 
-        //instead? use function etc..
-        'required': {
+        //do_instead? use function or change crud_behavior, etc..
+        //crud_type: insert, update, delete, deleted_at function
+        //params. rls above applies based on crud_type
+        'do_instead': {
             'select': {},
             'insert': {},
             'update': {},
@@ -356,17 +363,18 @@ actions: select/insert/update/delete/truncate
 
 
 
-
-
+/*
+routes and test routes are for raw queries to be written.
+they take precedence if defined. otherwise use model
+*/
 let routes = {
+    //interface global?
 
     select: {
-        // raw_query is written
-        // query: {
-        //     'description': '',
-        //     'interface': []
-        //     'str':
-        //      bind: ''
+        // 'description': '',
+        // 'interface': []
+        // 'query': '',
+        //  bind: '' //bind or replacement
         // }
         // allow additions of filters.
     }, //  function or model overwrite
@@ -380,14 +388,15 @@ let routes = {
     truncate: {} //boolean //true defaults to false
 }
 
-//test_model for separate set if test_schema or test_name not defined
-//use schema and name not test_schema and test_name
-//test_prod is sync check string equivalency with diff?
-//if no testing using routes will do nothing
-
+/*
+test_model for separate set if test_schema or test_name not defined
+use schema and name not test_schema and test_name
+test_prod is sync check string equivalency with diff?
+if no testing using routes will do nothing
+*/
 
 let test_routes = {
- 
+    //interface global?
     select: {},
     insert: {}, 
     update: {},
