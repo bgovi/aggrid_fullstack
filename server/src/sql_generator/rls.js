@@ -21,7 +21,7 @@ class rls_policy {
         //using add to values to check if allowed
         //on_check in the where clause
     select() {
-        
+
     }
 
 
@@ -68,3 +68,39 @@ class rls_policy {
 
 
 }
+
+
+/*
+add to filters
+
+field 
+
+in_subquery
+not_in_subquery
+
+
+
+main_column
+sub_column
+
+
+exists
+
+schema:
+name:
+
+where: [{
+    main_field
+    main_column  
+    sub_column
+    field
+
+    operator: 
+
+    main_cast
+    sub_cast
+
+}
+
+
+*/
