@@ -16,6 +16,10 @@ class sql_generator {
 
     }
 
+    mustach_parser () {
+        //used to add proper bind field when using rls or expressions
+    }
+
     //map field to column
     //map field to alias for final return type
     //select column as Alias
