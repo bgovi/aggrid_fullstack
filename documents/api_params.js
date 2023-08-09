@@ -148,6 +148,10 @@ let model = {
         //using add to values to check if allowed
         //on_check in the where clause
 
+        //expressions and rls written as raw querires components.
+        //input fields will use the {{mustach}} syntax. will be swapped out
+        //during final query build with proper bind type.
+
         'rls':  
             {
                 //on_all: using and with_check
@@ -159,6 +163,7 @@ let model = {
                 //column in subquery
                 //column not in subquery
                 //value and type?
+                //raw string only
                 "using": {
                     //select, update, delete
 

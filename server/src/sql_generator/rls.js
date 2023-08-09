@@ -84,23 +84,40 @@ main_column
 sub_column
 
 
-exists
+field:
 
+exists
 schema:
 name:
+return_column:
+
+//rls only
+
+//where processed by filters
+
+//sub_filter for rls structure
 
 where: [{
-    main_field
-    main_column  
-    sub_column
+    main_field  
+    sub_column: must be a-zA-Z0-9_
     field
 
+    value_1:
     operator: 
+    value_2
 
     main_cast
     sub_cast
 
 }
+
+SELECT product_id, product_name
+FROM products p
+WHERE EXISTS (
+    SELECT 1
+    FROM order_items oi
+    WHERE oi.product_id = p.product_id
+);
 
 
 */
