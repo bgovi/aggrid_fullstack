@@ -3,6 +3,8 @@ This modules is used to create the sql string to be ran
 
 
 */
+const mustache = require('mustache');
+
 
 
 // subfield generator
@@ -16,8 +18,38 @@ class sql_generator {
 
     }
 
-    mustach_parser () {
+    from_statement ( ) {
+        /*
+            Generally only one from statement. May require multiple if cross join
+            is required for full text search
+        */
+    }
+
+    expression_column ( ) {
+
+    }
+
+    raw_query ( ) {
+
+    }
+
+
+
+    mustach_parser (bind_fields, template) {
         //used to add proper bind field when using rls or expressions
+        //bind_type
+        //interface to data
+        // Data to be used in the template
+        const data = {
+            name: ':John',
+            age: 30,
+            city: ':New York'
+        };
+        
+        // Mustache template
+        const template = 'Hello, {{name}}! You are {{age}} years old and live in {{city}}.';
+        const output = mustache.render(template, data);
+        console.log(output);
     }
 
     //map field to column
@@ -80,14 +112,26 @@ class sql_generator {
     }
     update_rls () {
         /*
-            INSERT INTO schema.table (x,y) FROM
-            (   SELECT (:bind)::text as column
-                
-            ) x (x,Y) WHERE (rls)
+            UPDATE dummy
+                SET customer=subquery.customer,
+                address=subquery.address,
+                partn=subquery.partn
+            FROM (
+                SELECT * FROM ( 
+                    SELECT address_id, customer, address, partn 
+                ) 
+                --where with_check_rls
+            ) AS subquery
+            WHERE dummy.address_id=subquery.address_id
+            AND --using_rls
+            ;
         */
     }
     delete_rls () {
-
+        /*
+            DELETE FROM films
+                WHERE films.id = :id AND (--using_rls)
+        */
     }
     select_rls () {
         /*
@@ -106,9 +150,13 @@ class sql_generator {
                         WHERE 
                             column_2 = table_1.column_1);
         */
+
+        //add text filters?
+
     }
     ts_query_cross_join () {
         //add a default if undefined.
+        //modify from statement and add filter
     }
 
     field_to_column () {
@@ -133,6 +181,15 @@ class sql_generator {
             WHERE condition
             RETURNING column1, column2, ...;
         */
+    }
+
+    dynamic_column_entry( ) {
+        /*
+            columns are dynamically added in insert statement
+            and update statement
+        */
+
+
     }
 
 
