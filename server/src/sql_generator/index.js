@@ -1,10 +1,12 @@
 /*
 This modules is used to create the sql string to be ran
 
+only postgres is supported currently
+
 
 */
 const mustache = require('mustache');
-
+const pgx = require("pg-escape")
 
 
 // subfield generator
@@ -15,6 +17,15 @@ class sql_generator {
     }
 
     create_sql () {
+
+    }
+
+    literal_escape() {
+        //
+        var sql = pgx('INSERT INTO %I VALUES(%L)', 'Books a', "O'Reilly");
+        let s = pgx.ident("Hi")
+        console.log(s)
+        console.log(sql)
 
     }
 
@@ -99,6 +110,10 @@ class sql_generator {
 
     //rls
     //text filter cross join
+    upsert_rls () {
+
+    }
+
 
     insert_rls () {
         /*
