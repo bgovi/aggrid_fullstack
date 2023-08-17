@@ -6,11 +6,14 @@ only postgres is supported currently
 
 */
 const mustache = require('mustache');
-const pgx = require("pg-escape")
+const pg_escape = require("pg-escape")
 
 
 // subfield generator
 // engine i.e. postgres, mysql, .. etc
+// field must be xyz
+
+//field must start with a letter
 class sql_generator {
     constructor(sql_engine, agfields, route_type, model_config, payload, is_test ) {
 
@@ -20,24 +23,42 @@ class sql_generator {
 
     }
 
-    literal_escape() {
+    literal_escape(sql_engine, sql_literal) {
         //
-        var sql = pgx('INSERT INTO %I VALUES(%L)', 'Books a', "O'Reilly");
-        let s = pgx.ident("Hi")
-        console.log(s)
-        console.log(sql)
-
+        const regex = /^[a-zA-Z0-9_]+$/;
+        if ( regex.text(sql_literal) ) {
+            return `"${sql_literal} "`
+        }
+        else {
+            return pg_escape.ident(sql_literal)
+        }
     }
 
-    from_statement ( ) {
+    from_statement ( sql_engine, model ) {
         /*
             Generally only one from statement. May require multiple if cross join
             is required for full text search
         */
+
+        //from view or table? 
+
+
     }
 
-    expression_column ( ) {
+    create_field_map( model_interface, bind_type ) {
+        let x = ":"
+        if (bind_type = 'bind') {x = '$'}
+    }
 
+    create_field_map( model_interface, bind_type ) {
+        let x = ":"
+        if (bind_type = 'bind') {x = 'a'}
+    }
+
+    expression_column ( expression_template, field_map ) {
+        //
+        let expr = mustache.render(expression_template, field_map)
+        return expr
     }
 
     raw_query ( ) {
@@ -99,6 +120,8 @@ class sql_generator {
         /*
             For select query prepends with null. Used as first row.
         */
+
+        // null loop with type cast for select
     }
 
     //bind or replace
@@ -222,6 +245,19 @@ class sql_generator {
     //rls
     //subquery
 }
+
+function update_build( sql_template, columns, data ) {
+    //create set and where conditions 
+}
+
+function insert_build( sql_template, columns, data ) {
+    //create set and where conditions
+
+    //add columns that are sent and not requried
+}
+
+function select_filter_buid() {}
+
 
 //concat model syntax with crud statement and payload
 //if 1 value returned success if 0 then error

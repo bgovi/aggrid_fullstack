@@ -152,6 +152,10 @@ let model = {
         //input fields will use the {{mustach}} syntax. will be swapped out
         //during final query build with proper bind type.
 
+
+        //raw_using create full select statement with type and value checks?
+
+
         'rls':  
             {
                 //on_all: using and with_check
