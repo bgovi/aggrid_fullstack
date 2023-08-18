@@ -14,6 +14,13 @@ const pg_escape = require("pg-escape")
 // field must be xyz
 
 //field must start with a letter
+//template generator
+
+//error log in admin table.
+//error_message, template query, data
+//timestamp
+//clear log button
+
 class sql_generator {
     constructor(sql_engine, agfields, route_type, model_config, payload, is_test ) {
 
@@ -23,37 +30,92 @@ class sql_generator {
 
     }
 
-    literal_escape(sql_engine, sql_literal) {
-        //
-        const regex = /^[a-zA-Z0-9_]+$/;
-        if ( regex.text(sql_literal) ) {
-            return `"${sql_literal} "`
-        }
-        else {
-            return pg_escape.ident(sql_literal)
-        }
-    }
 
-    from_statement ( sql_engine, model ) {
-        /*
-            Generally only one from statement. May require multiple if cross join
-            is required for full text search
-        */
-
-        //from view or table? 
-
-
-    }
-
-    create_field_map( model_interface, bind_type ) {
+    bind_operator( bind_type ) {
         let x = ":"
         if (bind_type = 'bind') {x = '$'}
+        return x
+    }
+    bind_name( bind_type ) {
+        if (bind_type == 'bind') {return 'bind'}
+        else if (bind_type == 'replacements') {return 'replacements'}
+        else { return 'replacements' }
     }
 
-    create_field_map( model_interface, bind_type ) {
-        let x = ":"
-        if (bind_type = 'bind') {x = 'a'}
+    bind_object( interface ) {
+        /*
+            loops through interface
+        */
+        let bind_char = this.bind_operator()
+        //need bind map first
+
+        //loop through expression
+        let exps = []
+        let bind_fields = {}
+        for(let i = 0; i < interface.length; i++ ) {
+            let x = interface[i]
+            if (x.hasOwnProperty('field') ) {
+                let fx = x['field']
+                bind_fields[fx] = `${bind_char}${fx}`
+                
+            } else if ( x.hasOwnProperty('vfield') ) {
+                if (this.is_expression(x)) {continue}
+
+                let fx = x['vfield']
+                bind_fields[fx] = `${bind_char}${fx}`
+                //if is expression
+
+            } else if ( x.hasOwnProperty('agfield') ) {
+                if (this.is_expression(x)) {continue}
+                this.agfield_parser(x)
+                //referenced as select
+
+
+                //expression injected on insert/update/delete?
+
+                //if is expression
+
+            } else if ( x.hasOwnProperty('sfield') ) {
+                if (this.is_expression(x)) {continue}
+                //if is expression
+                //type column alias
+
+            }
+        }
+        for(let i =0; i < exps.length; i++) {
+
+        }
     }
+
+    is_expression( interface_row ) {
+        return interface_row.hasOwnProperty('expression')
+    }
+
+
+    expression_parser ( ) {
+        //no referenceing other expressions
+        //send error
+
+    }
+    agfield_parser( ) {
+        /*
+            type handling
+
+        */
+
+        //is datetime
+
+    }
+
+    rls_parser ( ) {
+
+    }
+
+    route_interface ( ) {
+        //select, insert, update and delete
+    }
+
+
 
     expression_column ( expression_template, field_map ) {
         //
@@ -61,13 +123,13 @@ class sql_generator {
         return expr
     }
 
-    raw_query ( ) {
+    raw_query (bind_field, sql_template ) {
 
     }
 
 
 
-    mustach_parser (bind_fields, template) {
+    mustach_parser (bind_fields, expression_template) {
         //used to add proper bind field when using rls or expressions
         //bind_type
         //interface to data
@@ -79,7 +141,8 @@ class sql_generator {
         };
         
         // Mustache template
-        const template = 'Hello, {{name}}! You are {{age}} years old and live in {{city}}.';
+        const expression_template = 'Hello, {{name}}! You are {{age}} years old and live in {{city}}.';
+        //mustache syntax dollar quote string
         const output = mustache.render(template, data);
         console.log(output);
     }
@@ -95,9 +158,6 @@ class sql_generator {
         //engine type
     }
 
-    create_function () {
-
-    }
     parse_model () {
 
     }
@@ -108,11 +168,6 @@ class sql_generator {
 
     raw_query () {
 
-    }
-    raw_select () {
-        //wrap so filters and order by can be used
-        //i.e. select * FROM ( select function_x(:field_1) ) x
-        //where statements 
     }
 
 
@@ -133,69 +188,6 @@ class sql_generator {
 
     //rls
     //text filter cross join
-    upsert_rls () {
-
-    }
-
-
-    insert_rls () {
-        /*
-            INSERT INTO schema.table (x,y) FROM
-            (   SELECT type_cast as column, .. FROM 
-                    VALUES (:bind, :bind) 
-                
-                
-            ) x (x,Y) WHERE (rls)
-        */
-    }
-    update_rls () {
-        /*
-            UPDATE dummy
-                SET customer=subquery.customer,
-                address=subquery.address,
-                partn=subquery.partn
-            FROM (
-                SELECT * FROM ( 
-                    SELECT address_id, customer, address, partn 
-                ) 
-                --where with_check_rls
-            ) AS subquery
-            WHERE dummy.address_id=subquery.address_id
-            AND --using_rls
-            ;
-        */
-    }
-    delete_rls () {
-        /*
-            DELETE FROM films
-                WHERE films.id = :id AND (--using_rls)
-        */
-    }
-    select_rls () {
-        /*
-            SELECT * FROM (
-                SELECT * FROM schema.table
-                WHERE (rls )
-            )
-
-            SELECT  column1
-            FROM  table_1
-            WHERE 
-                EXISTS( SELECT 
-                            1 
-                        FROM 
-                            table_2 
-                        WHERE 
-                            column_2 = table_1.column_1);
-        */
-
-        //add text filters?
-
-    }
-    ts_query_cross_join () {
-        //add a default if undefined.
-        //modify from statement and add filter
-    }
 
     field_to_column () {
 
@@ -210,7 +202,10 @@ class sql_generator {
     }
 
     function_call () {
-        
+        /*
+            select x.x( )
+
+        */
     }
 
     returning () {
@@ -228,6 +223,17 @@ class sql_generator {
         */
 
 
+    }
+
+    literal_escape(sql_engine, sql_literal) {
+        //
+        const regex = /^[a-zA-Z0-9_]+$/;
+        if ( regex.text(sql_literal) ) {
+            return `"${sql_literal} "`
+        }
+        else {
+            return pg_escape.ident(sql_literal)
+        }
     }
 
 
