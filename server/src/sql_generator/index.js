@@ -27,6 +27,10 @@ class sql_generator {
     }
 
     create_sql () {
+        //is_test or prod
+        //use model or route
+        //use view or table
+
 
     }
 
@@ -82,9 +86,16 @@ class sql_generator {
 
             }
         }
-        for(let i =0; i < exps.length; i++) {
+        let bind_exprs = {}
 
+        for(let i =0; i < exps.length; i++) {
+            // add to bind_exprs
         }
+        //add bind_exprs to bind_fields
+        //maybe how should be called on select vs .. need to keep track
+        //based on field type
+
+        //injection type?
     }
 
     is_expression( interface_row ) {
@@ -174,6 +185,9 @@ class sql_generator {
     prepend_null () {
         /*
             For select query prepends with null. Used as first row.
+            cast everything as null with correct type
+
+            //need final statement
         */
 
         // null loop with type cast for select

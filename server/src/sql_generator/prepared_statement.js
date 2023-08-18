@@ -79,6 +79,8 @@ class prepared_generator {
         /*
                 --cast types?
 
+                --where to prepend null
+
                 SELECT * FROM (
                     SELECT column_1, ...,
                     FROM x
