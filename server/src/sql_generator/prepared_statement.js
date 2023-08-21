@@ -18,7 +18,9 @@ class prepared_generator {
 
     */
 
-    constructor(agfields, route, rls_config ) {
+
+
+    constructor(sql_engine, api_interface, agfields, route, rls_config ) {
 
     }
     //on select
@@ -63,6 +65,23 @@ class prepared_generator {
         /*
             Generally only one from statement. May require multiple if cross join
             is required for full text search
+
+
+
+            let sql_model = ""
+            let prod_routes = ""
+            let test_routes = ""
+
+
+            let use_prod_model = ""
+            let use_test_model = ""
+            // 'schema': "prod_schema",
+            // 'table': "table_name",
+            // 'view': "view", //meant for select when inner joins are required. primarily meant for select. table name
+            // //will be used when view is not available.
+            // 'test_schema': "test_schema",
+            // 'test_table': "table_name",
+            // 'test_view': "view_name",
         */
         //from view or table? 
     }
@@ -72,6 +91,17 @@ class prepared_generator {
 
         //add a default if undefined.
         //modify from statement and add filter
+    }
+
+    prepend_null () {
+        /*
+            For select query prepends with null. Used as first row.
+            cast everything as null with correct type
+
+            //need final statement
+        */
+
+        // null loop with type cast for select
     }
 
 
@@ -201,6 +231,23 @@ class prepared_generator {
     returning() {
         //assemble returning statement with type cast
     }
+    function_call () {
+        /*
+            select x.x( )
+
+        function syntax args parameter is same as column structure in model
+        'function': {
+            'schema': '',
+            'name': '',
+            'args': [
+                { 'field':  'name', 'required': true, 'default_value': ''}, //field used to inject user values
+                { 'expression': ''} //add raw string as component. may require access to now() for example
+            ]
+        }
+        */
+    }
+
+
 
 
 }

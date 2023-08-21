@@ -341,7 +341,6 @@ let model = {
             'name': '',
             'args': [
                 { 'field':  'name', 'required': true, 'default_value': ''}, //field used to inject user values
-                { 'column': 'name'},  //column used to add table columns in funciton call
                 { 'expression': ''} //add raw string as component. may require access to now() for example
             ]
         },

@@ -26,12 +26,24 @@ class sql_generator {
 
     }
 
-    create_sql () {
-        //is_test or prod
-        //use model or route
-        //use view or table
+    create_prepared_statement () {
 
 
+
+        if (this.is_test) {
+            let x = test_routes['']
+            if (! x) {
+                //raw query with interface
+            }
+            //model structure
+
+        } else {
+
+        }
+
+
+
+        //returns generator function.
     }
 
 
@@ -48,7 +60,10 @@ class sql_generator {
 
     bind_object( interface ) {
         /*
-            loops through interface
+            loops through interface and creates object for replacements when using
+            expressions
+
+            loop through function also?
         */
         let bind_char = this.bind_operator()
         //need bind map first
@@ -80,6 +95,9 @@ class sql_generator {
                 //if is expression
 
             } else if ( x.hasOwnProperty('sfield') ) {
+                //query
+                //document
+
                 if (this.is_expression(x)) {continue}
                 //if is expression
                 //type column alias
@@ -90,11 +108,12 @@ class sql_generator {
 
         for(let i =0; i < exps.length; i++) {
             // add to bind_exprs
+            let x = exps[i]
+            bind_fields[i] = this.expression_column( expression_template, field_map )
         }
         //add bind_exprs to bind_fields
         //maybe how should be called on select vs .. need to keep track
         //based on field type
-
         //injection type?
     }
 
@@ -114,6 +133,8 @@ class sql_generator {
 
         */
 
+        // {'agfield': 'user_id', 'agtype': 'user_id'}, 
+
         //is datetime
 
     }
@@ -124,6 +145,8 @@ class sql_generator {
 
     route_interface ( ) {
         //select, insert, update and delete
+        //determine what fields are allowed
+        //ignore text filter
     }
 
 
@@ -135,28 +158,12 @@ class sql_generator {
     }
 
     raw_query (bind_field, sql_template ) {
+        //require all fields if missing requires default
+        //what to do with select statement?
 
     }
 
 
-
-    mustach_parser (bind_fields, expression_template) {
-        //used to add proper bind field when using rls or expressions
-        //bind_type
-        //interface to data
-        // Data to be used in the template
-        const data = {
-            name: ':John',
-            age: 30,
-            city: ':New York'
-        };
-        
-        // Mustache template
-        const expression_template = 'Hello, {{name}}! You are {{age}} years old and live in {{city}}.';
-        //mustache syntax dollar quote string
-        const output = mustache.render(template, data);
-        console.log(output);
-    }
 
     //map field to column
     //map field to alias for final return type
@@ -169,7 +176,25 @@ class sql_generator {
         //engine type
     }
 
-    parse_model () {
+    //parse_payload
+    parse_model (route_type) {
+        if (route_type == 'select') {
+            //allow select filter vs allow returning filter
+            //server side injected? now to handle payload parameters
+        } else if ( route_type == 'insert' ) {
+
+        } else if ( route_type == 'update' ) {
+
+        } else if ( route_type == 'delete' ) {
+
+        } else if ( route_type == 'truncate' )
+        {
+
+        } else {
+
+        }
+
+        //all should pass
 
     }
 
@@ -179,18 +204,6 @@ class sql_generator {
 
     raw_query () {
 
-    }
-
-
-    prepend_null () {
-        /*
-            For select query prepends with null. Used as first row.
-            cast everything as null with correct type
-
-            //need final statement
-        */
-
-        // null loop with type cast for select
     }
 
     //bind or replace
@@ -215,12 +228,7 @@ class sql_generator {
 
     }
 
-    function_call () {
-        /*
-            select x.x( )
 
-        */
-    }
 
     returning () {
         /*
@@ -240,7 +248,7 @@ class sql_generator {
     }
 
     literal_escape(sql_engine, sql_literal) {
-        //
+        //only allow alphanumeric and spaces?
         const regex = /^[a-zA-Z0-9_]+$/;
         if ( regex.text(sql_literal) ) {
             return `"${sql_literal} "`
@@ -250,6 +258,24 @@ class sql_generator {
         }
     }
 
+
+    mustach_parser (bind_fields, expression_template) {
+        //used to add proper bind field when using rls or expressions
+        //bind_type
+        //interface to data
+        // Data to be used in the template
+        const data = {
+            name: ':John',
+            age: 30,
+            city: ':New York'
+        };
+        
+        // Mustache template
+        const expression_template = 'Hello, {{name}}! You are {{age}} years old and live in {{city}}.';
+        //mustache syntax dollar quote string
+        const output = mustache.render(template, data);
+        console.log(output);
+    }
 
     //insert into from
     //update from
@@ -265,6 +291,15 @@ class sql_generator {
     //rls
     //subquery
 }
+
+
+//build query
+//template, payload_row
+
+
+// constructor(sql_engine, agfields, route_type, model_config, payload, is_test ) {
+
+// }
 
 function update_build( sql_template, columns, data ) {
     //create set and where conditions 
