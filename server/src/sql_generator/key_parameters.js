@@ -3,7 +3,7 @@ used for model compliance
 
 i.e. now() in postgres is equivalent to GetDate in sql server
 
-
+revoke escape characters
 */
 
 
@@ -34,5 +34,22 @@ function date_now(sql_engine) {
     if (sql_engine == 'postgres') {
         return 'now()'
     } else { return 'now()' }
+}
 
+function field_to_column(sql_engine, interface ) {
+
+
+}
+
+function field_to_alias(sql_engine, interface ) {
+
+    
+}
+
+function column_to_alias(sql_engine, interface) {
+
+}
+
+function output_type_cast(sql_engine, interface) {
+    
 }

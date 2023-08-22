@@ -23,6 +23,8 @@ let select_query = {
     // {'field': field_name, 'operator': 'not_in', 'value':  [str(val_1), str(val_2)] }
     // {'field': field_name, 'operator': 'tsvector', 'value':  "", ; 'threshold': numerical, 'score': true }
     // delimiter? query_type, document_type
+    search: {},
+    rank: {},
 
     //pagination limit and offset should be positive integers > 0
     limit: '',

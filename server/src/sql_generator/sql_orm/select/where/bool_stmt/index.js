@@ -49,6 +49,9 @@ function CreateBooleanStatement(quoted_column_name, operator, placeholder ) {
     else if ( like_in.includes(ox) ) {
         // replacementObject[repName] = '%'+varx+'%'
         //if use placeholder with % wrap placeholder strings in concatenated %. i.e. '%'||$1||'%', '%'||$2||'%',  
+
+        // column in ( select value from STRING_SPLIT( $placeholder ) ) //make everything lower case?
+
         return `( ${cn} ${oval} ( ARRAY[ ${placeholder} ] ) )`
     } 
     else if ( ox === 'is_not_null' || ox === 'is_null' ) { 
