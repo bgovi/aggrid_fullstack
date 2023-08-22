@@ -36,6 +36,9 @@ function DeleteAtStatement(schema_name, table_name, row_data, values, index, del
     return { "text": out_text, "values": values, 'new_index': bparams.new_index   }
 }
 
+//rls statement
+
+
 module.exports = {
     'DeleteStatement': DeleteStatement,
     'DeleteAtStatement': DeleteAtStatement
