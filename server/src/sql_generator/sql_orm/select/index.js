@@ -35,12 +35,15 @@ function SelectStatementAppendNull( ) {
     let x = `
         SELECT ${text_aliases} 
         FROM (
+
+            //if any filters dont include or if rank used
             SELECT * FROM (
-                SELECT null, ..
+                SELECT (null)::type as col1, ..
             ) nx
-            ${where} 
+            ${where_null_filters} 
 
             UNION ALL
+            //
 
             SELECT * FROM (
                 SELECT ${columns}

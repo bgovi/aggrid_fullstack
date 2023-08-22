@@ -18,20 +18,6 @@ const bindp = require('../bindp')
 
 // function UpdateStatement(schema_name, table_name, row_data, values, index, update_params )
 
-//BatchInsert
-function BatchInsertStatement(schema_name, table_name, row_data_array,values, index, insert_params ) {
-    if (! sutil.IsArray(row_data_array)) {throw new Error ('row_data_array must be javascript array')}
-    if (! insert_params.hasOwnProperty("batch_insert_row")) {insert_params["batch_insert_row"] = true}
-    let query_output = []
-    for (var i = 0; i < row_data_array.length ; i++) {
-        let row_data = row_data_array[i]
-        let ix = InsertStatement(schema_name, table_name, row_data,values, index, insert_params )
-        index = ix.new_index
-        query_output.push(ix.text)
-    }
-    let query = query_output.join('\n')
-    return { "text": query, "values": values, "new_index": index } 
-}
 
 function InsertStatement(schema_name, table_name, row_data,values, index, insert_params ){
     /*
@@ -48,6 +34,21 @@ function InsertStatement(schema_name, table_name, row_data,values, index, insert
     let query1 = `INSERT INTO "${schema_name}"."${table_name}" ${insert_cv_string.text} ${constraint_string}`.trim()
     let query  = `${query1} ${returning_string}`.trim()  +';'
     return { "text": query, "values": values, "new_index": insert_cv_string.new_index } 
+}
+
+function InsertStatementRls( ) {
+
+    let x = `
+        INSERT INTO table (time)
+        (SELECT * FROM ( 
+            --type cast
+            SELECT x1 as , ... ) x
+            WHERE RLS
+        )
+    
+    `
+
+
 }
 
 function ParseInsertParams(init_params, row_data) {

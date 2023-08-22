@@ -20,6 +20,9 @@ function DeleteStatement(schema_name, table_name, row_data, values, index, delet
     let returning_string = rs.ReturningStr(params.return_param, params.return_options)
 
     let bparams = bindp.AddBindParameters('id', row_data['id'], {}, values, index, params.bind_type, array_type = params.array_type)
+
+    //add rls statement
+
     let out_text = `DELETE FROM "${schema_name}"."${table_name}" WHERE id =${bparams.pholder} ${returning_string}`.trim() + ';'
     return { "text": out_text, "values": values, 'new_index': bparams.new_index }
 
