@@ -17,6 +17,7 @@ function SelectStatement(schema_name, table_name, values, index, select_params) 
     let order_by_stm = orderby.OrderClause(select_params['order_by'] || [])
     let page_stm     = page.PaginationClause(select_params['limit'], select_params['offset'] )
     let where_data   = where.WhereStatement(select_params['where'], values, index, select_params )
+    //add rls to where statement
     let new_index    = where_data['new_index']
     let where_stm    = where_data['where_str']
 
@@ -27,6 +28,31 @@ function SelectStatement(schema_name, table_name, values, index, select_params) 
     ${page_stm}
     `.trim() + ';'
     return { "text": select_str, "values": values, "new_index": new_index } 
+}
+
+function SelectStatementAppendNull( ) {
+
+    let x = `
+        SELECT ${text_aliases} 
+        FROM (
+            SELECT * FROM (
+                SELECT null, ..
+            ) nx
+            ${where} 
+
+            UNION ALL
+
+            SELECT * FROM (
+                SELECT ${columns}
+                FROM "${schema_name}"."${table_name}"
+                CROSS JOIN filters?
+                WHERE rls
+                AND FILTERS
+            ) "${table_name}
+        )
+        ${order_by}
+        ${pagination}
+    `
 }
 
 module.exports = { 'SelectStatement': SelectStatement }
