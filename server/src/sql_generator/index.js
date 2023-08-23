@@ -47,6 +47,24 @@ class sql_generator {
     }
 
 
+    crud_params() {
+        /*
+            Used to assemble sql generator parameters.
+
+
+
+        */
+
+
+        //select, insert, update, delete
+        //add using rls
+        //add with check rls
+
+        //
+
+    }
+
+
     bind_operator( bind_type ) {
         let x = ":"
         if (bind_type = 'bind') {x = '$'}

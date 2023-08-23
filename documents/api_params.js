@@ -168,15 +168,9 @@ let model = {
                 //column not in subquery
                 //value and type?
                 //raw string only
-                "using": {
-                    //select, update, delete
-
-                },
-                "with_check": {
-                    //insert or update
-
-
-                }
+                //insert, select, update, delete. set of boolean statements.
+                //insert is inject in select statement. select, update and delete in where
+                //route info take precedence. add lazy error function.
             }
         //
         , 
@@ -245,10 +239,15 @@ let model = {
             },
             // virtual_columns and or calculated columns only select
             // vfield refrences column always alphaNumeric. no sql injection possible.
+            // if no expression assumes its precalculated by the view
             {'vfield':'cfte', 'column': '',  'alias': '', 'type': 'boolean',
                 'description': '',
                 "expression": ""
             },
+
+        ],
+        search: {
+
             //search string field. string comming from user, can add multiple columns as input
             //first input alwasy user string.
 
@@ -257,7 +256,8 @@ let model = {
 
             //coalesce null as '' and add space
             //details in text_search.js
-            {'sfield':'search_string', 'stype': 'tsquery',  'column': '',  'alias': '', 'type': 'boolean',
+
+            'sfield':'search_string', 'stype': 'tsquery',  'column': '',  'alias': '', 'type': 'boolean',
                 //tsquery
                 //tsvector
 
@@ -300,8 +300,11 @@ let model = {
                 //now to handle null?
                 //this is a raw string that is injected into the query
                 "expression": ""
-            }
-        ],
+
+
+
+        },
+
 
         //50000
         'max_rows': false, //number
