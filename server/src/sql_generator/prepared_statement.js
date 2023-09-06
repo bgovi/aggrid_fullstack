@@ -11,6 +11,13 @@ It ensures that the data being inserted or updated adheres to the conditions spe
 calculate fields regardless. has default value when not entered.
 */
 
+        //model_params
+
+        // let crud_generator = ''
+
+        //returns generator function. 
+        //takes user_token, client_data
+
 
 class prepared_generator {
     /*
@@ -28,7 +35,7 @@ class prepared_generator {
     //on_update
         //using add to values to check if allowed
         //on_check in the where clause
-    create_prepared_statement(sql_engine, model) {
+    create_prepared_statement_from_model(sql_engine, model) {
         if (raw_query) {
             if (route == 'select') {
 
@@ -52,9 +59,35 @@ class prepared_generator {
 
         }
 
+    }
 
+    create_prepared_statement_from_route(sql_engine, model) {
+        if (raw_query) {
+            if (route == 'select') {
+
+                //append_filters
+            }
+
+
+        }
+        else {
+            if (route == 'select') {
+
+            } else if (route = 'insert') {
+
+            } else if (route = 'update') {
+                
+            } else if (route = 'delete') {
+                
+            } else if (route = 'truncate') {
+                
+            }
+
+        }
 
     }
+
+
 
     create_function () {
 
@@ -196,8 +229,7 @@ class prepared_generator {
     insert () {
         /*
             INSERT INTO schema.table (x,y) FROM
-            (   SELECT type_cast as column, .. FROM 
-                    VALUES (:bind, :bind) 
+            (   SELECT type_cast as column
                 
                 
             ) x (x,Y) WHERE (rls)
@@ -216,6 +248,11 @@ class prepared_generator {
             AND --using_rls
             ;
         */
+
+        //add bind_exprs to bind_fields
+        //maybe how should be called on select vs .. need to keep track
+        //based on field type
+        //injection type?
 
         //columns
         //returning columns
@@ -247,7 +284,28 @@ class prepared_generator {
         */
     }
 
+    raw_query (bind_field, sql_template ) {
+        //require all fields if missing requires default
+        //what to do with select statement?
+
+        //check if valid query with select wrapper?
+        //ping sqlglot. also know transactions
+
+    }
 
 
+    //concat model syntax with crud statement and payload
+    //if 1 value returned success if 0 then error
 
+    //api_error table
+
+    /*
+        pagination sql server
+
+        SELECT employee_id, first_name, last_name
+        FROM employees
+        ORDER BY employee_id
+        OFFSET 10 ROWS
+        FETCH NEXT 10 ROWS ONLY;
+    */
 }

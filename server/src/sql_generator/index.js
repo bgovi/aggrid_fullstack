@@ -5,11 +5,10 @@ only postgres is supported currently
 
 
 */
-const mustache = require('mustache');
-const pg_escape = require("pg-escape")
+const mustache       = require('mustache');
+const pg_escape      = require("pg-escape")
+const key_parameters = require('key_parameters')
 
-
-// subfield generator
 // engine i.e. postgres, mysql, .. etc
 // field must be xyz
 
@@ -26,24 +25,39 @@ class sql_generator {
 
     }
 
-    create_prepared_statement () {
+    model_parameters () {
+        /*
+            generates model parameters
+        */
+
+        //if model or route missing return error?
+
+        let route_type = this.route_type
+        let is_test    = this.is_test
+
+        let use_model = true
+        let route_name = 'routes'
+        if (is_test) { route_name = 'test_routes' }
 
 
-
-        if (this.is_test) {
-            let x = test_routes['']
-            if (! x) {
-                //raw query with interface
-            }
-            //model structure
-
-        } else {
-
+        if (model_config.hasOwnProperty(route_name) ) {
+            let rx = model_config[route_name]
+            if (rx.hasOwnProperty(route_type) ) { use_model = false }
         }
 
 
 
-        //returns generator function.
+        //api_parameters create and assemble api paramters
+        let api_params = this.api_parameter_generator()
+        
+        
+        //rls generator?
+        
+        //model_params
+        // let crud_generator = ''
+
+        //returns generator function. 
+        //takes user_token, client_data
     }
 
 
@@ -51,9 +65,21 @@ class sql_generator {
         /*
             Used to assemble sql generator parameters.
 
+            //if vfield is expression use to assemble column
+            //complete missing information and filter
+
+            select: requries field, vfield and agfield
+            vfield if no expression adds column name to select.
+            otherwise (expression) as "column" in select
+            must wrap in a select so filters work on values.
+
+            insert gets field and agfield on_insert: true/false/null or on 
+
 
 
         */
+
+
 
 
         //select, insert, update, delete
@@ -61,22 +87,21 @@ class sql_generator {
         //add with check rls
 
         //
+    }
+    crud_types() {
+        //for interface and search set behavior
+        //i.e. for select/insert/update/delete 
+        //optional or enforced //agfields only
+
 
     }
 
 
-    bind_operator( bind_type ) {
-        let x = ":"
-        if (bind_type = 'bind') {x = '$'}
-        return x
-    }
-    bind_name( bind_type ) {
-        if (bind_type == 'bind') {return 'bind'}
-        else if (bind_type == 'replacements') {return 'replacements'}
-        else { return 'replacements' }
-    }
 
-    bind_object( interface ) {
+
+
+
+    bind_object( interface, search_interface ) {
         /*
             loops through interface and creates object for replacements when using
             expressions
@@ -129,10 +154,9 @@ class sql_generator {
             let x = exps[i]
             bind_fields[i] = this.expression_column( expression_template, field_map )
         }
-        //add bind_exprs to bind_fields
-        //maybe how should be called on select vs .. need to keep track
-        //based on field type
-        //injection type?
+
+
+        //text search
     }
 
     is_expression( interface_row ) {
@@ -145,40 +169,37 @@ class sql_generator {
         //send error
 
     }
-    agfield_parser( ) {
+    agfield_parser(ag_field, bind_fields, bind_char ) {
         /*
             type handling
+            user_token has ag_xx names
 
         */
-
-        // {'agfield': 'user_id', 'agtype': 'user_id'}, 
-
-        //is datetime
-
+        let sql_engine = this.sql_engine
+        if (agtype == 'id')              { bind_fields[ag_field] = `${bind_char}ag_id`}
+        else if (agtype == 'oauth_id')   { bind_fields[ag_field] = `${bind_char}ag_oauth_id` }
+        else if (agtype == 'first_name') { bind_fields[ag_field] = `${bind_char}ag_first_name` }
+        else if (agtype == 'last_name')  { bind_fields[ag_field] = `${bind_char}ag_last_name` }
+        else if (agtype == 'email')      { bind_fields[ag_field] = `${bind_char}ag_email` }
+        else if (agtype == 'created_at') { bind_fields[ag_field] = key_parameters.date_now(sql_engine) }
+        else if (agtype == 'updated_at') { bind_fields[ag_field] = key_parameters.date_now(sql_engine) }
+        else if (agtype == 'deleted_at') { bind_fields[ag_field] = key_parameters.date_now(sql_engine)}
     }
 
     rls_parser ( ) {
+        //if all
 
-    }
-
-    route_interface ( ) {
         //select, insert, update and delete
+        //upsert uses insert and update?
         //determine what fields are allowed
         //ignore text filter
     }
-
 
 
     expression_column ( expression_template, field_map ) {
         //
         let expr = mustache.render(expression_template, field_map)
         return expr
-    }
-
-    raw_query (bind_field, sql_template ) {
-        //require all fields if missing requires default
-        //what to do with select statement?
-
     }
 
 
@@ -213,48 +234,9 @@ class sql_generator {
         }
 
         //all should pass
-
-    }
-
-    parse_route () {
-
-    }
-
-    raw_query () {
-
-    }
-
-    //bind or replace
-
-    //field to columns
-    //field to alias
-
-    //cross joins for text filter
-
-    //rls
-    //text filter cross join
-
-    field_to_column () {
-
-    }
-
-    field_to_alias () {
-
-    }
-    field_to_column_as_alias () {
-        //for returning or select
-
     }
 
 
-
-    returning () {
-        /*
-            DELETE FROM table_name
-            WHERE condition
-            RETURNING column1, column2, ...;
-        */
-    }
 
     dynamic_column_entry( ) {
         /*
@@ -295,54 +277,15 @@ class sql_generator {
         console.log(output);
     }
 
-    //insert into from
-    //update from
-    //delete from
+    bind_operator( bind_type ) {
+        let x = ":"
+        if (bind_type = 'bind') {x = '$'}
+        return x
+    }
+    bind_name( bind_type ) {
+        if (bind_type == 'bind') {return 'bind'}
+        else if (bind_type == 'replacements') {return 'replacements'}
+        else { return 'replacements' }
+    }
 
-    //select
-    //insert
-    //update
-    //delete
-    //truncate
-
-
-    //rls
-    //subquery
 }
-
-
-//build query
-//template, payload_row
-
-
-// constructor(sql_engine, agfields, route_type, model_config, payload, is_test ) {
-
-// }
-
-function update_build( sql_template, columns, data ) {
-    //create set and where conditions 
-}
-
-function insert_build( sql_template, columns, data ) {
-    //create set and where conditions
-
-    //add columns that are sent and not requried
-}
-
-function select_filter_buid() {}
-
-
-//concat model syntax with crud statement and payload
-//if 1 value returned success if 0 then error
-
-//api_error table
-
-/*
-    pagination sql server
-
-    SELECT employee_id, first_name, last_name
-    FROM employees
-    ORDER BY employee_id
-    OFFSET 10 ROWS
-    FETCH NEXT 10 ROWS ONLY;
-*/

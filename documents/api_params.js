@@ -246,7 +246,8 @@ let model = {
             },
 
         ],
-        search: {
+        search: [
+            {
 
             //search string field. string comming from user, can add multiple columns as input
             //first input alwasy user string.
@@ -295,15 +296,9 @@ let model = {
 
                 'description': '', 'allow_null': False, 'default_value': '', 'alias': '',
                 'return': false,
-                //operator: how to define tsquery and tsvector operation?
-                //how to handle numerical operations?
-                //now to handle null?
-                //this is a raw string that is injected into the query
-                "expression": ""
-
-
-
-        },
+        }
+        ]
+        ,
 
 
         //50000
@@ -327,27 +322,6 @@ let model = {
         'ignore_undefined': true,// for dynamic assembly only. default_value to filter in raw query.
         //if rls just dont use column name in insert
 
-        //do_instead? use function or change crud_behavior, etc..
-        //crud_type: insert, update, delete, deleted_at function
-        //params. rls above applies based on crud_type
-        'do_instead': {
-            'select': {},
-            'insert': {},
-            'update': {},
-            'delete': {}
-        }
-
-        /*
-        function syntax args parameter is same as column structure in model
-        'function': {
-            'schema': '',
-            'name': '',
-            'args': [
-                { 'field':  'name', 'required': true, 'default_value': ''}, //field used to inject user values
-                { 'expression': ''} //add raw string as component. may require access to now() for example
-            ]
-        },
-        */
 };
 
 
@@ -372,6 +346,18 @@ actions: select/insert/update/delete/truncate
 //hard code query for full dynamic expression.
 //routes route_name: /namespace/name/action
 
+/*
+function syntax args parameter is same as column structure in model
+'function': {
+    'schema': '',
+    'name': '',
+    'args': [
+        { 'field':  'name', 'required': true, 'default_value': ''}, //field used to inject user values
+        { 'expression': ''} //add raw string as component. may require access to now() for example
+    ]
+},
+*/
+
 
 
 /*
@@ -384,7 +370,8 @@ let routes = {
     select: {
         // 'description': '',
         // 'interface': []
-        // 'query': '',
+        // 'search' : []
+        // 'query': '', //raw_query
         //  bind: '' //bind or replacement
         // }
         // allow additions of filters.
