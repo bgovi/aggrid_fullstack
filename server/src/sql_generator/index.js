@@ -24,6 +24,26 @@ class sql_generator {
 
     }
 
+
+
+    query_generator () {
+        /*
+            returns function used to assemble sql query for a specific route
+        */
+
+        //if model or route missing return error?
+
+
+        let params = this.model_parameters() //get rls, interface and 
+        //api_parameters create and assemble api paramters
+        let api_params = this.api_parameter_generator(params['interface'], params['rls_object'], params['search_interface'])
+        let sql_generator = null
+        return sql_generator
+
+
+    }
+
+
     model_parameters () {
         /*
             generates model parameters
@@ -62,6 +82,9 @@ class sql_generator {
         //returns generator function. 
         //takes user_token, client_data
     }
+
+
+
 
     api_parameter_generator( interface, rls_object, search_interface ) {
         /*
