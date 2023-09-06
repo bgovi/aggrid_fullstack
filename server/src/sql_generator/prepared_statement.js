@@ -18,6 +18,7 @@ calculate fields regardless. has default value when not entered.
         //returns generator function. 
         //takes user_token, client_data
 
+const pg_escape = require("pg-escape")
 
 class prepared_generator {
     /*
@@ -27,7 +28,7 @@ class prepared_generator {
 
 
 
-    constructor(sql_engine, api_interface, agfields, route, rls_config ) {
+    constructor(sql_engine, api_interface, agfields, route_type, rls_config ) {
 
     }
     //on select
@@ -87,6 +88,19 @@ class prepared_generator {
 
     }
 
+    crud_types() {
+        //for interface and search set behavior
+        //i.e. for select/insert/update/delete 
+        //optional or enforced //agfields only
+
+
+    }
+
+    type_cast () {
+        //everything is sent as string by default. can overwrite.
+        //data is casted into correct type on data modification.
+        //engine type
+    }
 
 
     create_function () {
@@ -293,6 +307,17 @@ class prepared_generator {
 
     }
 
+    literal_escape(sql_engine, sql_literal) {
+        //only allow alphanumeric and spaces?
+        const regex = /^[a-zA-Z0-9_]+$/;
+        if ( regex.text(sql_literal) ) {
+            return `"${sql_literal} "`
+        }
+        else {
+            return pg_escape.ident(sql_literal)
+        }
+    }
+
 
     //concat model syntax with crud statement and payload
     //if 1 value returned success if 0 then error
@@ -309,3 +334,50 @@ class prepared_generator {
         FETCH NEXT 10 ROWS ONLY;
     */
 }
+
+// crud_params() {
+//     /*
+//         Used to assemble sql generator parameters.
+
+//         //if vfield is expression use to assemble column
+//         //complete missing information and filter
+
+//         select: requries field, vfield and agfield
+//         vfield if no expression adds column name to select.
+//         otherwise (expression) as "column" in select
+//         must wrap in a select so filters work on values.
+
+//         insert gets field and agfield on_insert: true/false/null or on 
+
+
+
+//     */
+
+
+
+
+//     //select, insert, update, delete
+//     //add using rls
+//     //add with check rls
+// }
+
+   //parse_payload
+//    parse_model (route_type) {
+//     if (route_type == 'select') {
+//         //allow select filter vs allow returning filter
+//         //server side injected? now to handle payload parameters
+//     } else if ( route_type == 'insert' ) {
+
+//     } else if ( route_type == 'update' ) {
+
+//     } else if ( route_type == 'delete' ) {
+
+//     } else if ( route_type == 'truncate' )
+//     {
+
+//     } else {
+
+//     }
+
+//     //all should pass
+// }

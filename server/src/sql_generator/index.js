@@ -6,7 +6,6 @@ only postgres is supported currently
 
 */
 const mustache       = require('mustache');
-const pg_escape      = require("pg-escape")
 const key_parameters = require('key_parameters')
 
 // engine i.e. postgres, mysql, .. etc
@@ -21,7 +20,7 @@ const key_parameters = require('key_parameters')
 //clear log button
 
 class sql_generator {
-    constructor(sql_engine, agfields, route_type, model_config, payload, is_test ) {
+    constructor(sql_engine, agfields, route_type, model_config, is_test ) {
 
     }
 
@@ -46,9 +45,13 @@ class sql_generator {
         }
 
 
+        let get_params = '' //get rls, interface and 
+
+
 
         //api_parameters create and assemble api paramters
         let api_params = this.api_parameter_generator()
+        //get route or model type
         
         
         //rls generator?
@@ -60,48 +63,7 @@ class sql_generator {
         //takes user_token, client_data
     }
 
-
-    crud_params() {
-        /*
-            Used to assemble sql generator parameters.
-
-            //if vfield is expression use to assemble column
-            //complete missing information and filter
-
-            select: requries field, vfield and agfield
-            vfield if no expression adds column name to select.
-            otherwise (expression) as "column" in select
-            must wrap in a select so filters work on values.
-
-            insert gets field and agfield on_insert: true/false/null or on 
-
-
-
-        */
-
-
-
-
-        //select, insert, update, delete
-        //add using rls
-        //add with check rls
-
-        //
-    }
-    crud_types() {
-        //for interface and search set behavior
-        //i.e. for select/insert/update/delete 
-        //optional or enforced //agfields only
-
-
-    }
-
-
-
-
-
-
-    bind_object( interface, search_interface ) {
+    api_parameter_generator( interface, rls_object, search_interface ) {
         /*
             loops through interface and creates object for replacements when using
             expressions
@@ -137,38 +99,26 @@ class sql_generator {
 
                 //if is expression
 
-            } else if ( x.hasOwnProperty('sfield') ) {
-                //query
-                //document
-
-                if (this.is_expression(x)) {continue}
-                //if is expression
-                //type column alias
-
-            }
+            } 
         }
-        let bind_exprs = {}
+        //rls
+        let rls = this.rls_parser(rls_object, bind_fields)
+
+        //search
+
 
         for(let i =0; i < exps.length; i++) {
             // add to bind_exprs
             let x = exps[i]
-            bind_fields[i] = this.expression_column( expression_template, field_map )
+            bind_fields[i] = this.parse_expression( expression_template, field_map )
         }
 
-
-        //text search
     }
 
     is_expression( interface_row ) {
         return interface_row.hasOwnProperty('expression')
     }
 
-
-    expression_parser ( ) {
-        //no referenceing other expressions
-        //send error
-
-    }
     agfield_parser(ag_field, bind_fields, bind_char ) {
         /*
             type handling
@@ -186,95 +136,32 @@ class sql_generator {
         else if (agtype == 'deleted_at') { bind_fields[ag_field] = key_parameters.date_now(sql_engine)}
     }
 
-    rls_parser ( ) {
-        //if all
+    rls_parser ( rls_object, field_map ) {
+        /*
+            creates rls expressions for each crud operations
+        */
+        let rls = {}
+        let crud_types = ['select', 'insert', 'update', 'delete']
+        for (let i =0 ; i < crud_types.length; i++) {
+            let ct = crud_types[i]
 
-        //select, insert, update and delete
-        //upsert uses insert and update?
-        //determine what fields are allowed
-        //ignore text filter
+            if (rls_object.hasOwnProperty('select') ) {
+                rls[ct] = this.parse_expression(rls_object[crud_types], field_map)
+            } else if ( rls_object.hasOwnProperty('on_all') ) {
+                rls[ct] = this.parse_expression(rls_object['on_all'], field_map)
+            }
+        }
+        return rls
     }
 
 
-    expression_column ( expression_template, field_map ) {
-        //
+    parse_expression ( expression_template, field_map ) {
+        /*
+            // Mustache template
+            const expression_template = 'Hello, {{name}}! You are {{age}} years old and live in {{city}}.';
+        */
         let expr = mustache.render(expression_template, field_map)
         return expr
-    }
-
-
-
-    //map field to column
-    //map field to alias for final return type
-    //select column as Alias
-    //text_cast alias
-
-    type_cast () {
-        //everything is sent as string by default. can overwrite.
-        //data is casted into correct type on data modification.
-        //engine type
-    }
-
-    //parse_payload
-    parse_model (route_type) {
-        if (route_type == 'select') {
-            //allow select filter vs allow returning filter
-            //server side injected? now to handle payload parameters
-        } else if ( route_type == 'insert' ) {
-
-        } else if ( route_type == 'update' ) {
-
-        } else if ( route_type == 'delete' ) {
-
-        } else if ( route_type == 'truncate' )
-        {
-
-        } else {
-
-        }
-
-        //all should pass
-    }
-
-
-
-    dynamic_column_entry( ) {
-        /*
-            columns are dynamically added in insert statement
-            and update statement
-        */
-
-
-    }
-
-    literal_escape(sql_engine, sql_literal) {
-        //only allow alphanumeric and spaces?
-        const regex = /^[a-zA-Z0-9_]+$/;
-        if ( regex.text(sql_literal) ) {
-            return `"${sql_literal} "`
-        }
-        else {
-            return pg_escape.ident(sql_literal)
-        }
-    }
-
-
-    mustach_parser (bind_fields, expression_template) {
-        //used to add proper bind field when using rls or expressions
-        //bind_type
-        //interface to data
-        // Data to be used in the template
-        const data = {
-            name: ':John',
-            age: 30,
-            city: ':New York'
-        };
-        
-        // Mustache template
-        const expression_template = 'Hello, {{name}}! You are {{age}} years old and live in {{city}}.';
-        //mustache syntax dollar quote string
-        const output = mustache.render(template, data);
-        console.log(output);
     }
 
     bind_operator( bind_type ) {
