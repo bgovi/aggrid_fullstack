@@ -71,46 +71,23 @@ BETWEEN SYMMETRIC (does automatic swap)
 */
 
 
-
-//individual statement structure
-let select_param = { select_query}
-/*
-    send several requests in one statement
-    sends several select request. each request only allows for 10 value maximum to be returned
-    generally used to search or map several data points in a single request.
-*/
-let select_params = [
-    { select_query_1},
-    { select_query_2},
-    { select_query_3}
-    //...
-]
-
-
 /*
 For insert, update and delete payload structure
 */
 
 let modify_query = {
-        "data":  {}, //{"field_1":"valx1", "field_2":"valy1"}
+        "data":  {}, //{"field_1":"valx1", "field_2":"valy1"} []
         "tid": null, //transaction id. used to keep track of input and output results.
         "returning": ['id', 'column_1', 'xxx'] //if missing all fields returned
         //excluding: [] ?
 }
 
-//data modificaiton structure individual
-let post_param_ = {
-    modify_query
+let save_query = {
+    'insert': modify_query,
+    'update': modify_query,
+    'delete': modify_query
 }
 
-let post_params = [
-    // Array of objects. Contains information for crud operations.
-    // Operation order is not preserved.
-    modify_query_1,
-    modify_query_2,
-    modify_query_3
-    //...
-]
 
 /*
 Return structure of select or mutation operations
