@@ -11,6 +11,9 @@ const page    = require('./pagination/page')
 const where   = require('./where/index')
 const rp      = require('../../route_parser')
 
+// cross join and search parameters handled here
+
+
 function SelectStatement(schema_name, table_name, values, index, select_params) {
     rp.CheckIdentifierError(schema_name)
     rp.CheckIdentifierError(table_name)
@@ -30,7 +33,16 @@ function SelectStatement(schema_name, table_name, values, index, select_params) 
     return { "text": select_str, "values": values, "new_index": new_index } 
 }
 
+function TextSearchAssembly() {
+
+}
+
+function CrossJoin() {}
+
+
 function SelectStatementAppendNull( ) {
+
+    //simple filter for null if text is similar to null allow else
 
     let x = `
         SELECT ${text_aliases} 
@@ -57,5 +69,7 @@ function SelectStatementAppendNull( ) {
         ${pagination}
     `
 }
+
+function NullFilterAddition() {}
 
 module.exports = { 'SelectStatement': SelectStatement }

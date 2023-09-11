@@ -1,37 +1,69 @@
 /*
-This modules is used to create the sql string to be ran
-
+This modules is used to parse the api parameters and fill in gaps and expressions.
 only postgres is supported currently
 
+let api_interface = [
+    Array of objects. Contains information for crud operations.
+    Operation order is not preserved.
+
+    {
+        "crud_type": "", //only needed for save route 
+        "default_fields": "", //object with default type {x:"default_value_x", y:"default_value_y"}
+        "set_fields": "",  //array that has columns that should be used for set
+        "on_conflict": "", //string a-zA-Z0-9
+        "on_constraint": "", //string a-zA-Z0-9
+        "search_filter": "", //string or object with quick filter type:
+        "search_rank": "", //bool
+        "returning": "", //array of fields to used for returning [id, column_1, xxx] //defaults to id?
+        "rls": "",
+        "interface": ""
+        "query" "":
+        "deleted_at": 
+        "schema": ""
+        "table": ""
+        "is_invalid": {} //missing info?
+
+        "field_types": //available for operations based on select/insert/update/delete
+        "required": 
+
+
+            split_part(str, ':', 2) as part_no_2, 
+            split_part(str, ':', 3) as part_no_3
+
+        }
+]
+
+run compile and explain
 
 */
+
 const mustache       = require('mustache');
 const key_parameters = require('key_parameters')
 
-// engine i.e. postgres, mysql, .. etc
-// field must be xyz
-
-//field must start with a letter
-//template generator
-
-//error log in admin table.
-//error_message, template query, data
-//timestamp
-//clear log button
-
 class sql_generator {
-    constructor(sql_engine, agfields, route_type, model_config, is_test ) {
+    constructor(sql_engine, agfields, route_type, model_route_config, is_test ) {
 
     }
 
 
 
-    query_generator () {
+    api_parameters () {
         /*
             returns function used to assemble sql query for a specific route
         */
 
         //if model or route missing return error?
+        let route_ = null
+
+
+        //is test
+
+
+        //schema
+        //table
+        //view vfields are for views unless is expression then can be both
+        //is table or view
+
 
 
         let params = this.model_parameters() //get rls, interface and 
@@ -40,6 +72,9 @@ class sql_generator {
         let sql_generator = null
         return sql_generator
 
+    }
+
+    route_parameters () {
 
     }
 
@@ -117,9 +152,6 @@ class sql_generator {
                 this.agfield_parser(x)
                 //referenced as select
 
-
-                //expression injected on insert/update/delete?
-
                 //if is expression
 
             } 
@@ -138,11 +170,14 @@ class sql_generator {
 
     }
 
+
+
+
     is_expression( interface_row ) {
         return interface_row.hasOwnProperty('expression')
     }
 
-    agfield_parser(ag_field, bind_fields, bind_char ) {
+    agfield_parser(ag_field, bind_fields, bind_char, route_type ) {
         /*
             type handling
             user_token has ag_xx names
@@ -157,24 +192,30 @@ class sql_generator {
         else if (agtype == 'created_at') { bind_fields[ag_field] = key_parameters.date_now(sql_engine) }
         else if (agtype == 'updated_at') { bind_fields[ag_field] = key_parameters.date_now(sql_engine) }
         else if (agtype == 'deleted_at') { bind_fields[ag_field] = key_parameters.date_now(sql_engine)}
+        else if (agtype == 'expression') {
+            //insert, update, delete
+
+        }
+
+
+
     }
 
-    rls_parser ( rls_object, field_map ) {
+    rls_parser ( route_type, rls_object, field_map ) {
         /*
             creates rls expressions for each crud operations
         */
-        let rls = {}
-        let crud_types = ['select', 'insert', 'update', 'delete']
-        for (let i =0 ; i < crud_types.length; i++) {
-            let ct = crud_types[i]
 
-            if (rls_object.hasOwnProperty('select') ) {
-                rls[ct] = this.parse_expression(rls_object[crud_types], field_map)
-            } else if ( rls_object.hasOwnProperty('on_all') ) {
-                rls[ct] = this.parse_expression(rls_object['on_all'], field_map)
-            }
+        let crud_types = ['select', 'insert', 'update', 'delete']
+        if (rls_object.hasOwnProperty(route_type) ) {
+            let rls_statement = this.parse_expression(rls_object[route_type], field_map)
+            return rls_statement
+        } else if ( rls_object.hasOwnProperty('default') ) {
+            let rls_statement = this.parse_expression(rls_object['default'], field_map)
+            return rls_statement
         }
-        return rls
+
+        return null
     }
 
 

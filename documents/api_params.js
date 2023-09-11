@@ -137,6 +137,8 @@ let model = {
             for insert data is checked in select into statement
             for update data is checed in select and on column value in update where clause
             for delete only checked in where statement
+            for select
+            default used for all unless otherwise specified
             ignore on insert?
             cast on rls for insert
             string template for where statement allows quick rls for model
@@ -158,8 +160,8 @@ let model = {
 
         'rls':  
             {
-                //on_all: using and with_check
-                //on_all
+                //subquery_name?
+                //default: if nothing else
                 //on_select, insert, update, delete?
                 //add table name to column comparision in where clause
                 //i.e. table1.column1 = :field

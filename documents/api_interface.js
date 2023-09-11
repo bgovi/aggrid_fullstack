@@ -21,10 +21,11 @@ let select_query = {
     where: '', //[]
     // {'field': field_name, 'operator': 'not_in', 'value':  StringifyArray(value) }
     // {'field': field_name, 'operator': 'not_in', 'value':  [str(val_1), str(val_2)] }
-    // {'field': field_name, 'operator': 'tsvector', 'value':  "", ; 'threshold': numerical, 'score': true }
     // delimiter? query_type, document_type
-    search: {},
-    rank: {},
+    search: [{}],
+    rank: [{}],
+    // {'field': field_name, 'operator': 'tsvector', 'value':  "", ; 'threshold': numerical, 'score': true }
+
 
     //pagination limit and offset should be positive integers > 0
     limit: '',
@@ -33,7 +34,7 @@ let select_query = {
     //threshold 1 for true and 0 for false. if purely numerical any number between 0 and 1
 
     null: true ,//adds null to returned results. using for mapping and dropdown',
-    "returning": [], //return list of fields //defaults to all columns
+    "returning": [], //return list of fields //defaults to all columns i.e *
     //excluding: [] ?
     tid: null,
     or: true, //defaults to false. joins filters using or statement. defaults to using and
