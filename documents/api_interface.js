@@ -82,6 +82,9 @@ let modify_query = {
         //excluding: [] ?
 }
 
+//post route
+let modify_queries = [modify_query]
+
 let save_query = {
     'insert': modify_query,
     'update': modify_query,
