@@ -50,38 +50,69 @@ class sql_generator {
     api_parameters () {
         /*
             returns function used to assemble sql query for a specific route
+
+            simple check for begin ; and commit ; 
+            no trailling semicolon
         */
-
-        //if model or route missing return error?
-        let route_ = null
-
-
-        //is test
-
-
-        //schema
-        //table
-        //view vfields are for views unless is expression then can be both
-        //is table or view
-
-
-
-        let params = this.model_parameters() //get rls, interface and 
-        //api_parameters create and assemble api paramters
-        let api_params = this.api_parameter_generator(params['interface'], params['rls_object'], params['search_interface'])
-        let sql_generator = null
-        return sql_generator
-
+        if (this.is_route(route_type,is_test) ) {
+            return this.route_parameters()
+        } else {
+            //schema
+            //table
+            //view vfields are for views unless is expression then can be both
+            //is table or view
+            let params = this.model_parameters() //get rls, interface and 
+            //api_parameters create and assemble api paramters
+            let api_params = this.api_parameter_generator(params['interface'], params['rls_object'], params['search_interface'])
+            let sql_generator = null
+            return this.model_parameters()
+        }
     }
 
     route_parameters () {
+        /*
+            raw query or function
+        */
+        //if function
+
+
+        //else
+
 
     }
+
+    table_view(route_type, is_test) {
+
+
+
+    }
+    is_route(model_route_config,route_type, is_test) {
+        /*
+
+
+
+        */
+        if (is_test === true) {
+            if (model_route_config.hasOwnProperty('test_route') ) {
+                return model_route_config['test_route'].hasOwnProperty(route_type)
+            }
+            return false
+        } 
+        else {
+            if (model_route_config.hasOwnProperty('route') ) {
+                return model_route_config['test_route'].hasOwnProperty(route_type)
+            }
+            return false
+        }
+    }
+
+
+
 
 
     model_parameters () {
         /*
-            generates model parameters
+            generates model parameters into interface
         */
 
         //if model or route missing return error?
@@ -177,12 +208,17 @@ class sql_generator {
         return interface_row.hasOwnProperty('expression')
     }
 
-    agfield_parser(ag_field, bind_fields, bind_char, route_type ) {
+    agfield_parser(agfield_row, bind_fields, bind_char, route_type ) {
         /*
             type handling
             user_token has ag_xx names
 
         */
+        let ag_field = agfield_row['agfield']
+        let agtype  = agfield_row['agtype']
+        let _for_   = agfield_row['for']
+
+
         let sql_engine = this.sql_engine
         if (agtype == 'id')              { bind_fields[ag_field] = `${bind_char}ag_id`}
         else if (agtype == 'oauth_id')   { bind_fields[ag_field] = `${bind_char}ag_oauth_id` }
@@ -194,6 +230,10 @@ class sql_generator {
         else if (agtype == 'deleted_at') { bind_fields[ag_field] = key_parameters.date_now(sql_engine)}
         else if (agtype == 'expression') {
             //insert, update, delete
+            if (_for_.includes(route_type)) {
+                bind_fields[ag_field] = this.parse_expression( expression_template, bind_fields )
+
+            }
 
         }
 
@@ -205,8 +245,6 @@ class sql_generator {
         /*
             creates rls expressions for each crud operations
         */
-
-        let crud_types = ['select', 'insert', 'update', 'delete']
         if (rls_object.hasOwnProperty(route_type) ) {
             let rls_statement = this.parse_expression(rls_object[route_type], field_map)
             return rls_statement

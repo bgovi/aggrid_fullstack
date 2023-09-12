@@ -236,7 +236,7 @@ let model = {
             {'agfield': 'deleted_at' , 'agtype': 'deleted_at'}, //expression
             {'agfield': 'user_check' , 'agtype': 'expression', 
                 //modification_rules
-                'expresssion': ''
+                'expresssion': '', 'for': []
 
             },
             // virtual_columns and or calculated columns only select
