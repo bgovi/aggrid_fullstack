@@ -81,6 +81,30 @@ class sql_generator {
 
     }
 
+    function_parser () {
+        //args goes to interface
+        //schema and name and interface concatenated into query string
+    }
+
+    // (?i)begin\s*;\s*
+
+    // /begin\s*;\s*/i;
+
+    //end of string
+
+    // const pattern = /;\s*$/;
+
+    transaction_check ( query_string ) {
+        let begin_statement = /begin\s*;\s*/i
+        let end_statement   = /commit\s*;\s*/i
+        let semicolon_term  = /;\s*$/;
+
+
+        let isMatch = pattern.test( query_string );
+
+    }
+
+
     table_view(route_type, is_test) {
 
 
