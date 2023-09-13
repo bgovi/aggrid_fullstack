@@ -84,7 +84,6 @@ class sql_generator {
         //need bind map first
 
         //loop through expression
-        let exps = []
         let bind_fields = {}
         for(let i = 0; i < interface.length; i++ ) {
             //check if alphanumeric
@@ -146,7 +145,7 @@ class sql_generator {
     }
 
     model_missing_values() {
-        
+
     }
 
 
