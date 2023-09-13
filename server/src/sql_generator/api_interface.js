@@ -31,6 +31,8 @@ let api_interface = [
             split_part(str, ':', 3) as part_no_3
 
         }
+        "primary_key"
+        "is_query": ""
 ]
 
 run compile and explain
@@ -55,17 +57,15 @@ class sql_generator {
             no trailling semicolon
         */
         if (this.is_route(route_type,is_test) ) {
-            return this.route_parameters()
+            let params = this.route_parameters()
+            return params
         } else {
             //schema
             //table
             //view vfields are for views unless is expression then can be both
             //is table or view
             let params = this.model_parameters() //get rls, interface and 
-            //api_parameters create and assemble api paramters
-            let api_params = this.api_parameter_generator(params['interface'], params['rls_object'], params['search_interface'])
-            let sql_generator = null
-            return this.model_parameters()
+            return params
         }
     }
 
@@ -73,28 +73,53 @@ class sql_generator {
         /*
             raw query or function
         */
-        //if function
-
 
         //else
 
+        let bind_char = this.bind_operator()
+
+
+        //transaction check
+
+        //need bind map first
+
+        //loop through expression
+        let exps = []
+        let bind_fields = {}
+        for(let i = 0; i < interface.length; i++ ) {
+            //check if alphanumeric
+
+            let x = interface[i]
+            if (x.hasOwnProperty('field') ) {
+                let fx = x['field']
+                bind_fields[fx] = `${bind_char}${fx}`
+                
+            } else if ( x.hasOwnProperty('vfield') ) {
+                if (this.is_expression(x)) {continue}
+
+                let fx = x['vfield']
+                bind_fields[fx] = `${bind_char}${fx}`
+                //if is expression
+
+            } else if ( x.hasOwnProperty('pfield') ) {
+                if (this.is_expression(x)) {continue}
+                let fx = x['pfield']
+                bind_fields[fx] = `${bind_char}${fx}`
+            }
+            //param
+
+            //uniqueness check
+        }
+
+
 
     }
-
-    function_parser () {
-        //args goes to interface
-        //schema and name and interface concatenated into query string
-    }
-
-    // (?i)begin\s*;\s*
-
-    // /begin\s*;\s*/i;
-
-    //end of string
-
-    // const pattern = /;\s*$/;
 
     transaction_check ( query_string ) {
+        /*
+            For raw query string make sure
+        */
+
         let begin_statement = /begin\s*;\s*/i
         let end_statement   = /commit\s*;\s*/i
         let semicolon_term  = /;\s*$/;
@@ -106,13 +131,28 @@ class sql_generator {
 
 
     table_view(route_type, is_test) {
+        if (is_test === true) {
+            if (route_type === 'select') {
+                //check for view else use table
+
+            }
 
 
-
+        } else {
+            if (route_type ===  'select') {
+                //check for view else use table
+            }
+        }
     }
+
+    model_missing_values() {
+        
+    }
+
+
     is_route(model_route_config,route_type, is_test) {
         /*
-
+            returns true if is route
 
 
         */
@@ -140,6 +180,9 @@ class sql_generator {
         */
 
         //if model or route missing return error?
+
+
+        //fill missing column, alias, etc
 
         let route_type = this.route_type
         let is_test    = this.is_test
@@ -176,7 +219,7 @@ class sql_generator {
 
 
 
-    api_parameter_generator( interface, rls_object, search_interface ) {
+    api_parameter_generator( interface, rls_object) {
         /*
             loops through interface and creates object for replacements when using
             expressions
@@ -192,6 +235,7 @@ class sql_generator {
         for(let i = 0; i < interface.length; i++ ) {
             let x = interface[i]
             if (x.hasOwnProperty('field') ) {
+                //check if alphanumeric
                 let fx = x['field']
                 bind_fields[fx] = `${bind_char}${fx}`
                 
@@ -209,7 +253,10 @@ class sql_generator {
 
                 //if is expression
 
-            } 
+            }
+            //param
+
+            //uniqueness check
         }
         //rls
         let rls = this.rls_parser(rls_object, bind_fields)
@@ -222,12 +269,15 @@ class sql_generator {
             let x = exps[i]
             bind_fields[i] = this.parse_expression( expression_template, field_map )
         }
-
     }
 
+    primary_key () {
+        //if array check fields
+
+        //if string
 
 
-
+    }
     is_expression( interface_row ) {
         return interface_row.hasOwnProperty('expression')
     }
@@ -256,13 +306,8 @@ class sql_generator {
             //insert, update, delete
             if (_for_.includes(route_type)) {
                 bind_fields[ag_field] = this.parse_expression( expression_template, bind_fields )
-
             }
-
         }
-
-
-
     }
 
     rls_parser ( route_type, rls_object, field_map ) {
@@ -291,11 +336,19 @@ class sql_generator {
     }
 
     bind_operator( bind_type ) {
+        /*
+
+
+        */
         let x = ":"
         if (bind_type = 'bind') {x = '$'}
         return x
     }
     bind_name( bind_type ) {
+        /*
+
+
+        */
         if (bind_type == 'bind') {return 'bind'}
         else if (bind_type == 'replacements') {return 'replacements'}
         else { return 'replacements' }

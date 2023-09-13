@@ -247,6 +247,10 @@ let model = {
                 "expression": ""
             },
 
+            //pfield input only usefully for routes where inputs into functions used.
+            //ag_fields are always available and should be injected if needed via mustach syntax
+            //
+
         ],
         search: [
             {
@@ -348,18 +352,6 @@ actions: select/insert/update/delete/truncate
 //hard code query for full dynamic expression.
 //routes route_name: /namespace/name/action
 
-/*
-function syntax args parameter is same as column structure in model
-'function': {
-    'schema': '',
-    'name': '',
-    'args': [
-        { 'field':  'name', 'required': true, 'default_value': ''}, //field used to inject user values
-        { 'expression': ''} //add raw string as component. may require access to now() for example
-    ]
-},
-*/
-
 
 
 /*
@@ -368,16 +360,21 @@ they take precedence if defined. otherwise use model
 */
 let routes = {
     //interface global?
-
+    //only field and params. nothing else makes sense
+    //agtype and expressions dont make sense
+    //field
+    //vfield if return is calculation
+    //pfield
+    //select is wrapped also
+    //no expressions.
     select: {
         // 'description': '',
-        // 'interface': []
-        // 'search' : []
+        // 'interface': [] need literal for undefined value assumed to be column.
+        //  search and rank are expressions
         // 'query': '', //raw_query
         //  bind: '' //bind or replacement
-        // }
-        // allow additions of filters.
-    }, //  function or model overwrite
+        // undefined used table.column
+    },
 
 
     insert: {
