@@ -1,5 +1,14 @@
 module.exports = {
 
+    devServer: {
+        proxy: {
+            '/api': {
+                target: 'http://localhost:3000'
+            }
+        }
+    },
+
+
     pages: {
         index: {
             entry: './src/pages/index/main.js',
